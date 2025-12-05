@@ -3,8 +3,9 @@ const mongoose = require('mongoose')
 const morgan = require('morgan')
 require('dotenv').config()
 
-const productRoutes = require('./routes/productRoutes')
 const userRoutes = require('./routes/userRoutes')
+const productRoutes = require('./routes/productRoutes')
+const orderRoutes = require('./routes/orderRoutes')
 
 //models
 const Product = require("./models/Product")
@@ -23,8 +24,9 @@ mongoose.connect(process.env.MONGO_URI)
     .catch((err) => console.log(err))
 
 //API Routes
-app.use('/api', productRoutes)
 app.use('/api/auth', userRoutes)
+app.use('/api', productRoutes)
+app.use('/api/order', orderRoutes)
 
 //Error Handling
 app.use((err, req, res, next) => {
