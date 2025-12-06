@@ -5,6 +5,7 @@ import Home from './pages/Home.jsx'
 import { Toaster } from 'react-hot-toast'
 import Login from './pages/Login.jsx'
 import SignUp from './pages/SignUp.jsx'
+import Product from './pages/Product.jsx'
 
 function App() {
 
@@ -14,6 +15,7 @@ function App() {
         <Route index element={<Home />} />
         <Route path="login" element={<Login />} />
         <Route path="signup" element={<SignUp />} />
+        <Route path="product/:id" element={<Product />} />
       </Route>
     )
   )
