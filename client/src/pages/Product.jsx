@@ -1,9 +1,13 @@
 import { useParams } from "react-router";
 import { useFetch } from "../hooks/useFetch";
+import QuantityCounter from "../components/QuantityCounter";
+import { useState } from "react";
 
 const Product = () => {
     const params = useParams()
     const { data, loading, error } = useFetch(import.meta.env.VITE_API + "product/" + params.id);
+
+    const [quantity, setQuantity] = useState(1);
     
     return ( 
         <div>
@@ -29,6 +33,8 @@ const Product = () => {
                             {data.price}
                             <span className="text-gray-600 text-lg ml-1">PKR</span>
                         </p>
+
+                        <QuantityCounter initial={1} max={data.quantity} onChange={setQuantity} />
 
                         <div className="flex flex-col gap-3 mt-6 w-full">
                             <button className="flex items-center justify-center gap-2 w-full bg-[#0B7C56] text-white py-3 font-semibold rounded-lg hover:bg-[#095c40] transition-colors">
