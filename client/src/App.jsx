@@ -4,6 +4,7 @@ import RootLayout from './layout/RootLayout'
 import Home from './pages/Home.jsx'
 import { Toaster } from 'react-hot-toast'
 import Login from './pages/Login.jsx'
+import SignUp from './pages/SignUp.jsx'
 
 function App() {
 
@@ -12,6 +13,7 @@ function App() {
       <Route path="/" element={<RootLayout />}>
         <Route index element={<Home />} />
         <Route path="login" element={<Login />} />
+        <Route path="signup" element={<SignUp />} />
       </Route>
     )
   )
