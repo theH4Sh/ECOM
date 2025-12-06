@@ -2,12 +2,20 @@ import { useParams } from "react-router";
 import { useFetch } from "../hooks/useFetch";
 import QuantityCounter from "../components/QuantityCounter";
 import { useState } from "react";
-
+import { useDispatch } from "react-redux";
+import { addToCart } from "../slice/cartSlice";
 const Product = () => {
+    const dispatch = useDispatch();
+   
     const params = useParams()
     const { data, loading, error } = useFetch(import.meta.env.VITE_API + "product/" + params.id);
 
     const [quantity, setQuantity] = useState(1);
+
+    const items = {
+        product: params.id,
+        quantity: quantity
+    };
     
     return ( 
         <div>
@@ -37,7 +45,15 @@ const Product = () => {
                         <QuantityCounter initial={1} max={data.quantity} onChange={setQuantity} />
 
                         <div className="flex flex-col gap-3 mt-6 w-full">
-                            <button className="flex items-center justify-center gap-2 w-full bg-[#0B7C56] text-white py-3 font-semibold rounded-lg hover:bg-[#095c40] transition-colors">
+                            <button
+                                onClick={() => dispatch(addToCart({
+                                            product: params.id,
+                                            quantity: quantity,
+                                            name: data.name,
+                                            image: data.image,
+                                            price: data.price
+                                        }))}
+                                className="flex items-center justify-center gap-2 w-full bg-[#0B7C56] text-white py-3 font-semibold rounded-lg hover:bg-[#095c40] transition-colors">
                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="size-5">
                                     <path d="M10.75 4.75a.75.75 0 0 0-1.5 0v4.5h-4.5a.75.75 0 0 0 0 1.5h4.5v4.5a.75.75 0 0 0 1.5 0v-4.5h4.5a.75.75 0 0 0 0-1.5h-4.5v-4.5Z" />
                                 </svg>

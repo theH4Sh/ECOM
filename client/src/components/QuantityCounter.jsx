@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
-export default function QuantityCounter({ initial = 1, max }) {
+export default function QuantityCounter({ initial = 1, max, onChange }) {
   const [quantity, setQuantity] = useState(initial);
 
   const increase = () => {
@@ -14,6 +14,10 @@ export default function QuantityCounter({ initial = 1, max }) {
         setQuantity(quantity - 1);
     }
   }
+
+  useEffect(() => {
+    onChange(quantity);
+  }, [quantity]);
 
   return (
     <div className="flex items-center gap-2">
