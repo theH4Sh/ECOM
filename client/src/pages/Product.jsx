@@ -4,6 +4,7 @@ import QuantityCounter from "../components/QuantityCounter";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { addToCart } from "../slice/cartSlice";
+
 const Product = () => {
     const dispatch = useDispatch();
    
@@ -16,7 +17,7 @@ const Product = () => {
         product: params.id,
         quantity: quantity
     };
-    
+
     return ( 
         <div>
             {loading && <p>Loading...</p>}

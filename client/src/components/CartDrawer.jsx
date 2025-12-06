@@ -1,9 +1,13 @@
 import { useDispatch, useSelector } from "react-redux";
-import { removeFromCart } from "../slice/cartSlice";
+import { clearCart, removeFromCart } from "../slice/cartSlice";
+import { usePostOrder } from "../hooks/usePostOrder";
+import toast from "react-hot-toast";
 
 const CartDrawer = ({ open, onClose }) => {
   const cartItems = useSelector((state) => state.cart.items);
   const dispatch = useDispatch();
+
+  const { sendOrder, loading } = usePostOrder();
 
   const total = 0
 
@@ -11,6 +15,20 @@ const CartDrawer = ({ open, onClose }) => {
     total += item.price * item.quantity;
     console.log(total);
   }
+
+    
+    // order
+    const handleCheckout = async () => {
+        try {
+            const { data } = await sendOrder(cartItems);
+            console.log("Order Successful:", data);
+            toast.success("Order placed successfully!");
+            dispatch(clearCart());
+        } catch (error) {
+            console.error("Order Failed:", error);
+            toast.error("Failed to place order. Please try again.");
+        }
+    };
 
   return (
     <div
@@ -83,7 +101,9 @@ const CartDrawer = ({ open, onClose }) => {
 
         {/* Checkout */}
         <div className="p-5">
-          <button className="w-full bg-[#0B7C56] cursor-pointer text-white py-3 font-semibold rounded-lg hover:bg-[#095c40] transition-colors">
+          <button 
+            onClick={handleCheckout}
+            className="w-full bg-[#0B7C56] cursor-pointer text-white py-3 font-semibold rounded-lg hover:bg-[#095c40] transition-colors">
             Proceed to Checkout
           </button>
         </div>
