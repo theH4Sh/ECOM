@@ -2,6 +2,8 @@ import './App.css'
 import { createBrowserRouter, createRoutesFromElements, RouterProvider, Route } from 'react-router-dom'
 import RootLayout from './layout/RootLayout'
 import Home from './pages/Home.jsx'
+import { Toaster } from 'react-hot-toast'
+import Login from './pages/Login.jsx'
 
 function App() {
 
@@ -9,12 +11,14 @@ function App() {
     createRoutesFromElements(
       <Route path="/" element={<RootLayout />}>
         <Route index element={<Home />} />
+        <Route path="login" element={<Login />} />
       </Route>
     )
   )
 
   return (
     <>
+      <Toaster />
       <RouterProvider router={router} />
     </>
   )
