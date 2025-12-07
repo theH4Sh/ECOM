@@ -21,15 +21,9 @@ const CartDrawer = ({ open, onClose }) => {
     // order
     const handleCheckout = async () => {
       console.log(auth)
-      if (!auth.isAuthenticated) {
-        toast("You must be login to proceed", {
-          icon: "🔐",
-          style: {
-            borderRadius: "10px",
-            fontWeight: "bold",
-            background: "Black",
-            color: "white",
-          },
+      if (cartItems.length === 0) {
+        toast("Your cart is empty!", {
+          icon: "🛒",
         });
         return;
       }
@@ -117,8 +111,12 @@ const CartDrawer = ({ open, onClose }) => {
         <div className="p-5">
           <button 
             onClick={handleCheckout}
-            className="w-full bg-[#0B7C56] cursor-pointer text-white py-3 font-semibold rounded-lg hover:bg-[#095c40] transition-colors">
-            Proceed to Checkout
+            className={`w-full py-3 rounded-lg text-white 
+                ${!auth.isAuthenticated ? "bg-gray-400 cursor-not-allowed" : "bg-[#0B7C56] hover:bg-[#095c40]"}
+            `}
+            disabled={!auth.isAuthenticated || loading}
+          >
+            {auth.isAuthenticated ? (loading ? "Processing..." : "Checkout") : "Login to Checkout"}
           </button>
         </div>
       </div>
