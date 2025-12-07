@@ -3,7 +3,7 @@ import { useSelector } from "react-redux";
 
 export const useFetch = (url) => {
 
-    const [data, setData] = useState(null);
+    const [data, setData] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
@@ -24,17 +24,18 @@ export const useFetch = (url) => {
                 if (response.ok) {
                     const jsonData = await response.json();
                     setData(jsonData);
-                    setLoading(false);
                 } else {
                     throw new Error('Error fetching data');
                 }
 
             } catch (error) {
                 setError(error);
+            } finally {
+                setLoading(false);
             }
         }
 
         fetchData();
-    }, [url])
+    }, [url, token])
     return { data, loading, error };
 }
