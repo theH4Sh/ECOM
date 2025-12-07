@@ -1,3 +1,4 @@
+const mongoose = require('mongoose')
 const Order = require('../models/Order')
 const Product = require('../models/Product')
 
@@ -29,7 +30,8 @@ const createOrder = async (req, res, next) => {
             user: userId,
             items: orderItems,
             totalAmount,
-            paymentStatus: 'pending'
+            paymentStatus: 'pending',
+            orderStatus: 'pending'
         })
 
         await order.save()
@@ -68,8 +70,32 @@ const getAllOrders = async (req, res, next) => {
     }
 }
 
+const updateOrderStatus = async (req, res, next) => {
+    try {
+        const { orderId } = req.params
+        const { status } = req.body
+
+        if (!mongoose.Types.ObjectId.isValid(orderId)) {
+            return res.status(400).json({ message: 'Invalid order ID' })
+        }
+
+        const order = await Order.findById(orderId)
+        if (!order) {
+            return res.status(404).json({ message: 'Order not found' })
+        }
+
+        order.orderStatus = status
+        await order.save()
+
+        res.status(200).json({ message: 'Order status updated successfully', order })
+    } catch (error) {
+        next(error)
+    }
+}
+
 module.exports = {
     createOrder,
     getOrders,
-    getAllOrders
+    getAllOrders,
+    updateOrderStatus
 }
