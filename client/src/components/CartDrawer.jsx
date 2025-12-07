@@ -5,6 +5,7 @@ import toast from "react-hot-toast";
 
 const CartDrawer = ({ open, onClose }) => {
   const cartItems = useSelector((state) => state.cart.items);
+  const auth = useSelector((state) => state.auth);
   const dispatch = useDispatch();
 
   const { sendOrder, loading } = usePostOrder();
@@ -19,6 +20,19 @@ const CartDrawer = ({ open, onClose }) => {
     
     // order
     const handleCheckout = async () => {
+      console.log(auth)
+      if (!auth.isAuthenticated) {
+        toast("You must be login to proceed", {
+          icon: "🔐",
+          style: {
+            borderRadius: "10px",
+            fontWeight: "bold",
+            background: "Black",
+            color: "white",
+          },
+        });
+        return;
+      }
         try {
             const { data } = await sendOrder(cartItems);
             console.log("Order Successful:", data);
