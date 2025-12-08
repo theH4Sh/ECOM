@@ -4,11 +4,19 @@ const Product = require('../models/Product')
 
 const createOrder = async (req, res, next) => {
     try {
-        const { items, address } = req.body
+        const { items, name, phone, address } = req.body
         const userId = req.user._id
 
         if (!items || items.length === 0) {
             return res.status(400).json({ message: 'Order must contain at least one item' })
+        }
+
+        if (!name) {
+            return res.status(400).json({ message: 'Name is required' })
+        }
+
+        if (!phone) {
+            return res.status(400).json({ message: 'Phone number is required' })
         }
 
         if (!address) {
@@ -38,6 +46,8 @@ const createOrder = async (req, res, next) => {
             user: userId,
             items: orderItems,
             totalAmount,
+            name,
+            phone,
             address,
             paymentStatus: 'pending',
             orderStatus: 'pending'
