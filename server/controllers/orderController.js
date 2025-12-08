@@ -4,8 +4,16 @@ const Product = require('../models/Product')
 
 const createOrder = async (req, res, next) => {
     try {
-        const { items } = req.body
+        const { items, address } = req.body
         const userId = req.user._id
+
+        if (!items || items.length === 0) {
+            return res.status(400).json({ message: 'Order must contain at least one item' })
+        }
+
+        if (!address) {
+            return res.status(400).json({ message: 'Shipping address is required' })
+        }
 
         let totalAmount = 0
         const orderItems = []
@@ -30,6 +38,7 @@ const createOrder = async (req, res, next) => {
             user: userId,
             items: orderItems,
             totalAmount,
+            address,
             paymentStatus: 'pending',
             orderStatus: 'pending'
         })
