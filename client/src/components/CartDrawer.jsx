@@ -2,40 +2,50 @@ import { useDispatch, useSelector } from "react-redux";
 import { clearCart, removeFromCart } from "../slice/cartSlice";
 import { usePostOrder } from "../hooks/usePostOrder";
 import toast from "react-hot-toast";
+import { useNavigate } from "react-router";
 
 const CartDrawer = ({ open, onClose }) => {
   const cartItems = useSelector((state) => state.cart.items);
+  const total = useSelector((state) => state.cart.totalAmount);
   const auth = useSelector((state) => state.auth);
   const dispatch = useDispatch();
-
-  const { sendOrder, loading } = usePostOrder();
-
-  const total = 0
-
-  for (const item of cartItems) {
-    total += item.price * item.quantity;
-    console.log(total);
-  }
-
+  const navigate = useNavigate();
     
     // order
+    // const handleCheckout = async () => {
+    //   console.log(auth)
+    //   if (cartItems.length === 0) {
+    //     toast("Your cart is empty!", {
+    //       icon: "🛒",
+    //     });
+    //     return;
+    //   }
+    //     try {
+    //         const { data } = await sendOrder(cartItems);
+    //         console.log("Order Successful:", data);
+    //         toast.success("Order placed successfully!");
+    //         dispatch(clearCart());
+    //     } catch (error) {
+    //         console.error("Order Failed:", error);
+    //         toast.error("Failed to place order. Please try again.");
+    //     }
+    // };
+
     const handleCheckout = async () => {
-      console.log(auth)
       if (cartItems.length === 0) {
         toast("Your cart is empty!", {
           icon: "🛒",
         });
         return;
+       }
+
+      try {
+        onClose();
+        navigate('/checkout');
+      } catch (error) {
+          console.error("Order Failed:", error);
+          toast.error("Failed to place order. Please try again.");
       }
-        try {
-            const { data } = await sendOrder(cartItems);
-            console.log("Order Successful:", data);
-            toast.success("Order placed successfully!");
-            dispatch(clearCart());
-        } catch (error) {
-            console.error("Order Failed:", error);
-            toast.error("Failed to place order. Please try again.");
-        }
     };
 
   return (
@@ -114,9 +124,9 @@ const CartDrawer = ({ open, onClose }) => {
             className={`w-full py-3 rounded-lg text-white 
                 ${!auth.isAuthenticated ? "bg-gray-400 cursor-not-allowed" : "bg-[#0B7C56] hover:bg-[#095c40]"}
             `}
-            disabled={!auth.isAuthenticated || loading}
+            disabled={!auth.isAuthenticated}
           >
-            {auth.isAuthenticated ? (loading ? "Processing..." : "Checkout") : "Login to Checkout"}
+            {auth.isAuthenticated ? "Checkout" : "Login to Checkout"}
           </button>
         </div>
       </div>

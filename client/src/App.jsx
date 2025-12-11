@@ -8,6 +8,7 @@ import SignUp from './pages/SignUp.jsx'
 import Product from './pages/Product.jsx'
 import OrderHistory from './pages/OrderHistory.jsx'
 import { useSelector } from 'react-redux'
+import Checkout from './pages/Checkout.jsx'
 
 function App() {
 
@@ -21,6 +22,7 @@ function App() {
         <Route path="signup" element={ !auth.isAuthenticated ? <SignUp /> : <Navigate to='/' />} />
         <Route path="product/:id" element={<Product />} />
         <Route path="orders" element={ auth.isAuthenticated ? <OrderHistory /> : <Navigate to='/' />} />
+        <Route path="checkout" element={ auth.isAuthenticated ? <Checkout /> : <Navigate to='/' />} />
       </Route>
     )
   )

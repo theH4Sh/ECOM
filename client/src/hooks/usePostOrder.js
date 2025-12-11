@@ -8,7 +8,7 @@ export const usePostOrder = () => {
 
   const token = useSelector(state => state.auth.token); // just get the token
 
-  const sendOrder = async (items) => {
+  const sendOrder = async ({ items, name, phone, address }) => {
     setLoading(true);
     setError(null);
 
@@ -19,7 +19,7 @@ export const usePostOrder = () => {
           "Content-Type": "application/json",
           "Authorization": `Bearer ${token}`
         },
-        body: JSON.stringify({ items })
+        body: JSON.stringify({ items, name, phone, address })
       });
 
       if (!response.ok) throw new Error("Failed to place order");
