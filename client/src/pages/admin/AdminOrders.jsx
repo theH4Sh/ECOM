@@ -4,10 +4,17 @@ import toast from "react-hot-toast";
 import { useFetch } from "../../hooks/useFetch";
 
 const AdminOrders = () => {
+    const [orders, setOrders] = useState([]);
     const [selectedOrder, setSelectedOrder] = useState(null);
     const token = useSelector((state) => state.auth.token);
 
-    const { data: orders, loading, error } = useFetch('http://localhost:8000/api/order/get-all-orders');
+    const { data, loading, error } = useFetch('http://localhost:8000/api/order/get-all-orders');
+
+    useEffect(() => {
+        if (data) {
+            setOrders(data);
+        }
+    }, [data]);
 
     const handleStatusUpdate = async (orderId, newStatus) => {
         try {
@@ -20,19 +27,39 @@ const AdminOrders = () => {
                 body: JSON.stringify({ status: newStatus })
             });
 
-            if (response.ok) {
-                toast.success("Order status updated successfully!");
-                fetchOrders();
-                setSelectedOrder(null);
-            } else {
-                const error = await response.json();
-                toast.error(error.message || "Failed to update order status");
+            if (!response.ok) {
+                const err = await response.json().catch(() => ({}));
+                toast.error(err.message || "Failed to update order status");
+                return;
             }
-        } catch (error) {
+
+            const resData = await response.json();
+            const updatedOrder = resData.order; // backend must return updated order object
+
+            // UPDATE orders list
+            setOrders(prev =>
+                prev.map(o =>
+                    o._id === orderId 
+                        ? { ...o, orderStatus: newStatus } 
+                        : o
+                )
+            );
+
+            // UPDATE modal state
+            setSelectedOrder(prev =>
+                prev && prev._id === orderId
+                    ? { ...prev, orderStatus: newStatus }
+                    : prev
+            );
+
+            toast.success("Order status updated!");
+
+        } catch (e) {
+            console.error(e);
             toast.error("Failed to update order status");
-            console.error(error);
         }
     };
+
 
     const getStatusColor = (status) => {
         switch(status) {
@@ -124,7 +151,7 @@ const AdminOrders = () => {
 
             {/* Order Details Modal */}
             {selectedOrder && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+                <div className="fixed inset-0 bg-black/10 backdrop-blur-xs flex items-center justify-center z-50 p-4">
                     <div className="bg-white rounded-xl p-8 max-w-2xl w-full max-h-[90vh] overflow-y-auto">
                         <div className="flex items-center justify-between mb-6">
                             <h2 className="text-2xl font-bold text-gray-800">Order Details</h2>
