@@ -4,12 +4,20 @@ import QuantityCounter from "../components/QuantityCounter";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { addToCart } from "../slice/cartSlice";
+import ReviewForm from "../components/ReviewForm";
+import toast from "react-hot-toast";
+import { usePostReview } from "../hooks/usePostReview";
+import { useReviews } from "../hooks/useReviews";
 
 const Product = () => {
     const dispatch = useDispatch();
    
     const params = useParams()
     const { data, loading, error } = useFetch(import.meta.env.VITE_API + "product/" + params.id);
+    const { reviews, loading: reviewsLoading, error: reviewsError } = useReviews(params.id);
+
+    // send review
+    const { sendReview, loading: sendingReview, data: reviewData } = usePostReview(params.id);
 
     const [quantity, setQuantity] = useState(1);
 
@@ -19,11 +27,11 @@ const Product = () => {
     };
 
     return ( 
-        <div>
+        <div className="max-w-6xl mx-auto p-6 ">
             {loading && <p>Loading...</p>}
             {error && <p>Error: {error.message}</p>}
             {data && (
-                <div className="max-w-6xl mx-auto p-6 flex flex-col lg:flex-row gap-6">
+                <div className="flex flex-col lg:flex-row gap-6">
                     {/* LEFT — Image */}
                     <div className="w-full lg:w-1/2">
                         <img
@@ -68,6 +76,33 @@ const Product = () => {
                     </div>
                 </div>
             )}
+
+            <div className="my-20">
+                <ReviewForm onSubmit={async (review) => {
+                    try {
+                        await sendReview(review);
+                        toast.success("Review submitted successfully");
+                    } catch (err) {
+                        toast.error("Failed to submit review: " + err.message);
+                    }
+                }} />
+            </div>
+
+            {/* Display Reviews */}
+            <div className="my-10 max-w-xl">
+                <h3 className="text-2xl font-bold mb-4">Customer Reviews</h3>
+                {reviewsLoading && <p>Loading reviews...</p>}
+                {reviewsError && <p>Error loading reviews: {reviewsError.message}</p>}
+                {reviews.length === 0 && <p>No reviews yet.</p>}
+
+                {reviews.map(r => (
+                <div key={r._id} className="border rounded p-4 mb-3">
+                    <p className="font-semibold">{r.user.name || r.user.username}</p>
+                    <p>{"★".repeat(r.rating) + "☆".repeat(5 - r.rating)}</p>
+                    <p>{r.comment}</p>
+                </div>
+                ))}
+            </div>
         </div>
      );
 }
