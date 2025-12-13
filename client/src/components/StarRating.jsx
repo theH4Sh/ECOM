@@ -6,7 +6,7 @@ export default function StarRating({ rating, setRating }) {
   const [hover, setHover] = useState(0);
 
   return (
-    <div className="flex gap-1">
+    <div className="flex gap-1 justify-center">
       {[1, 2, 3, 4, 5].map((star) => (
         <FaStar
           key={star}

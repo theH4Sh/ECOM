@@ -10,101 +10,134 @@ import { usePostReview } from "../hooks/usePostReview";
 import { useReviews } from "../hooks/useReviews";
 
 const Product = () => {
-    const dispatch = useDispatch();
-   
-    const params = useParams()
-    const { data, loading, error } = useFetch(import.meta.env.VITE_API + "product/" + params.id);
-    const { reviews, loading: reviewsLoading, error: reviewsError } = useReviews(params.id);
+  const dispatch = useDispatch();
+  const params = useParams();
 
-    // send review
-    const { sendReview, loading: sendingReview, data: reviewData } = usePostReview(params.id);
+  const { data, loading, error } = useFetch(
+    import.meta.env.VITE_API + "product/" + params.id
+  );
 
-    const [quantity, setQuantity] = useState(1);
+  const { reviews, loading: reviewsLoading, error: reviewsError } =
+    useReviews(params.id);
 
-    const items = {
-        product: params.id,
-        quantity: quantity
-    };
+  const { sendReview } = usePostReview(params.id);
 
-    return ( 
-        <div className="max-w-6xl mx-auto p-6 ">
-            {loading && <p>Loading...</p>}
-            {error && <p>Error: {error.message}</p>}
-            {data && (
-                <div className="flex flex-col lg:flex-row gap-6">
-                    {/* LEFT — Image */}
-                    <div className="w-full lg:w-1/2">
-                        <img
-                            src={`http://localhost:8000/images/${data.image}`}
-                            alt={data.name}
-                            className="w-full h-72 md:h-96 lg:h-[450px] lg:w-[550px] object-cover rounded"
-                        />
-                    </div>
+  const [quantity, setQuantity] = useState(1);
 
-                    {/* RIGHT — Details */}
-                    <div className="w-full lg:w-1/2 flex flex-col items-start gap-3">
-                        <h2 className="text-3xl font-bold">{data.name}</h2>
-                        <p className="text-gray-700">{data.description}</p>
+  return (
+    <div className="max-w-6xl mx-auto px-4 py-10">
+      {loading && <p>Loading...</p>}
+      {error && <p>Error: {error.message}</p>}
 
-                        <p className="text-4xl font-bold">
-                            {data.price}
-                            <span className="text-gray-600 text-lg ml-1">PKR</span>
-                        </p>
+      {data && (
+        <>
+          {/* PRODUCT SECTION */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
+            {/* Image */}
+            <div className="bg-gray-100 rounded-xl overflow-hidden">
+              <img
+                src={`http://localhost:8000/images/${data.image}`}
+                alt={data.name}
+                className="w-full h-[450px] object-cover"
+              />
+            </div>
 
-                        <QuantityCounter initial={1} max={data.quantity} onChange={setQuantity} />
+            {/* Details */}
+            <div className="flex flex-col gap-4">
+              <h1 className="text-3xl font-bold">{data.name}</h1>
 
-                        <div className="flex flex-col gap-3 mt-6 w-full">
-                            <button
-                                onClick={() => dispatch(addToCart({
-                                            product: params.id,
-                                            quantity: quantity,
-                                            name: data.name,
-                                            image: data.image,
-                                            price: data.price
-                                        }))}
-                                className="flex items-center justify-center gap-2 w-full bg-[#0B7C56] text-white py-3 font-semibold rounded-lg hover:bg-[#095c40] transition-colors">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="size-5">
-                                    <path d="M10.75 4.75a.75.75 0 0 0-1.5 0v4.5h-4.5a.75.75 0 0 0 0 1.5h4.5v4.5a.75.75 0 0 0 1.5 0v-4.5h4.5a.75.75 0 0 0 0-1.5h-4.5v-4.5Z" />
-                                </svg>
-                                <span>Add to Cart</span>
-                            </button>
+              <p className="text-gray-600 leading-relaxed">
+                {data.description}
+              </p>
 
-                            <button className="w-full bg-white border border-gray-300 text-[#0B7C56] py-3 font-semibold rounded-lg hover:bg-[#0B7C56] hover:text-white transition-colors">
-                                Buy Now
-                            </button>
-                        </div>
-                    </div>
-                </div>
+              <p className="text-4xl font-bold text-gray-900">
+                PKR {data.price}
+              </p>
+
+              <QuantityCounter
+                initial={1}
+                max={data.quantity}
+                onChange={setQuantity}
+              />
+
+              <div className="flex flex-col gap-3 mt-6">
+                <button
+                  onClick={() =>
+                    dispatch(
+                      addToCart({
+                        product: params.id,
+                        quantity,
+                        name: data.name,
+                        image: data.image,
+                        price: data.price,
+                      })
+                    )
+                  }
+                  className="w-full bg-[#0B7C56] text-white py-3 rounded-lg font-semibold hover:bg-[#095c40] transition"
+                >
+                  Add to Cart
+                </button>
+
+                <button className="w-full border border-gray-300 py-3 rounded-lg font-semibold hover:bg-gray-100 transition">
+                  Buy Now
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {/* REVIEWS SECTION */}
+          <div className="mt-20 border-t border-gray-400 pt-12 flex flex-col items-center place-content-center">
+            <h2 className="text-3xl font-bold mb-6">Customer Reviews</h2>
+
+            {/* Review Form */}
+            <div className="mb-12 w-[400px] md:w-[800px]">
+              <ReviewForm
+                onSubmit={async (review) => {
+                  try {
+                    await sendReview(review);
+                    toast.success("Review submitted successfully");
+                  } catch (err) {
+                    toast.error("Failed to submit review");
+                  }
+                }}
+              />
+            </div>
+
+            {/* Review List */}
+            {reviewsLoading && <p>Loading reviews...</p>}
+            {reviewsError && <p>Error loading reviews</p>}
+            {reviews.length === 0 && (
+              <p className="text-gray-500">No reviews yet.</p>
             )}
 
-            <div className="my-20">
-                <ReviewForm onSubmit={async (review) => {
-                    try {
-                        await sendReview(review);
-                        toast.success("Review submitted successfully");
-                    } catch (err) {
-                        toast.error("Failed to submit review: " + err.message);
-                    }
-                }} />
-            </div>
+            <div className="space-y-4 w-[400px] md:w-[800px]">
+              {reviews.map((r) => (
+                <div
+                  key={r._id}
+                  className="border border-gray-200 rounded-xl p-5 bg-white shadow-sm"
+                >
+                  <div className="flex items-center justify-between mb-2">
+                    <p className="font-semibold">
+                      {r.user?.name || r.user?.username}
+                    </p>
 
-            {/* Display Reviews */}
-            <div className="my-10 max-w-xl">
-                <h3 className="text-2xl font-bold mb-4">Customer Reviews</h3>
-                {reviewsLoading && <p>Loading reviews...</p>}
-                {reviewsError && <p>Error loading reviews: {reviewsError.message}</p>}
-                {reviews.length === 0 && <p>No reviews yet.</p>}
+                    <p className="text-yellow-500 text-xl">
+                      {"★".repeat(r.rating)}
+                      <span className="text-gray-300">
+                        {"☆".repeat(5 - r.rating)}
+                      </span>
+                    </p>
+                  </div>
 
-                {reviews.map(r => (
-                <div key={r._id} className="border rounded p-4 mb-3">
-                    <p className="font-semibold">{r.user.name || r.user.username}</p>
-                    <p>{"★".repeat(r.rating) + "☆".repeat(5 - r.rating)}</p>
-                    <p>{r.comment}</p>
+                  <p className="text-gray-700">{r.comment}</p>
                 </div>
-                ))}
+              ))}
             </div>
-        </div>
-     );
-}
- 
+          </div>
+        </>
+      )}
+    </div>
+  );
+};
+
 export default Product;
