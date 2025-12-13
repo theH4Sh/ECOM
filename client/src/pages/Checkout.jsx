@@ -90,8 +90,14 @@ export default function Checkout() {
   };
 
   return (
-    <div className="max-w-6xl mx-auto px-4 py-10">
-      <h1 className="text-3xl font-semibold mb-8">Checkout</h1>
+    <div className="text-start max-w-6xl mx-auto px-4 py-10">
+
+      <div className="flex items-center gap-2 mb-8">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-8 h-8">
+          <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 15.75 3 12m0 0 3.75-3.75M3 12h18" />
+        </svg>
+        <h1 className="font-semibold text-3xl">Checkout</h1>
+      </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
 
@@ -99,7 +105,7 @@ export default function Checkout() {
         <div className="lg:col-span-2 space-y-6">
 
           {/* Shipping */}
-          <div className="bg-white border rounded-xl p-6 shadow-sm">
+          <div className="bg-white text-start rounded-xl p-6 shadow-sm">
             <h2 className="text-lg font-semibold mb-4">
               Shipping Information
             </h2>
@@ -108,14 +114,14 @@ export default function Checkout() {
               <input
                 type="text"
                 placeholder="Full Name"
-                className="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-black outline-none"
+                className="w-full border border-gray-400 rounded-lg px-4 py-2 focus:ring-2 focus:border-0 outline-none"
                 onChange={(e) => setName(e.target.value)}
               />
 
               <input
                 type="text"
                 placeholder="Phone Number"
-                className="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-black outline-none"
+                className="w-full border border-gray-400 rounded-lg px-4 py-2 focus:ring-2 focus:border-0 outline-none"
                 onChange={(e) => setPhone(e.target.value)}
               />
             </div>
@@ -123,13 +129,13 @@ export default function Checkout() {
             <input
               type="text"
               placeholder="Address"
-              className="w-full border rounded-lg px-4 py-2 mt-4 focus:ring-2 focus:ring-black outline-none"
+              className="w-full border border-gray-400 rounded-lg px-4 py-2 mt-4 focus:border-0 outline-none"
               onChange={(e) => setAddress(e.target.value)}
             />
           </div>
 
           {/* Payment */}
-          <div className="bg-white border rounded-xl p-6 shadow-sm">
+          <div className="bg-white text-start rounded-xl p-6 shadow-sm">
             <h2 className="text-lg font-semibold mb-4">Payment Details</h2>
 
             <div className="border rounded-lg px-4 py-3 bg-gray-50">
@@ -150,7 +156,7 @@ export default function Checkout() {
         </div>
 
         {/* RIGHT */}
-        <div className="bg-white border rounded-xl p-6 shadow-sm h-fit">
+        <div className="bg-white rounded-4xl p-6 shadow-2xl shadow-gray-400 h-fit">
           <h2 className="text-lg font-semibold mb-4">Order Summary</h2>
 
           <div className="space-y-4 max-h-64 overflow-auto">
@@ -188,7 +194,7 @@ export default function Checkout() {
           <button
             onClick={handlePlaceOrder}
             disabled={loading}
-            className="mt-6 w-full bg-black text-white py-3 rounded-lg font-medium hover:bg-gray-800 transition disabled:opacity-50"
+            className="mt-6 w-full bg-[#0B7C56] cursor-pointer text-white py-3 rounded-lg font-medium hover:bg-[#095C40] transition disabled:opacity-50"
           >
             {loading ? "Processing..." : "Pay & Place Order"}
           </button>
