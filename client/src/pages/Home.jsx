@@ -43,8 +43,8 @@ const Home = () => {
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
         {[
           { name: "Men", image: "/men.jpg" },
-          { name: "Women", image: "/women.jpg" },
-          { name: "Kids", image: "/kids.jpg" },
+          { name: "Women", image: "/mikasa.jpg" },
+          { name: "Kids", image: "/lego.jpg" },
         ].map((cat) => (
           <div
             key={cat.name}
