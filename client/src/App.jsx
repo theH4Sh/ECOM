@@ -13,6 +13,10 @@ import AdminLayout from './layout/AdminLayout.jsx'
 import AdminDashboard from './pages/admin/AdminDashboard.jsx'
 import AdminProducts from './pages/admin/AdminProducts.jsx'
 import AdminOrders from './pages/admin/AdminOrders.jsx'
+import { loadStripe } from '@stripe/stripe-js'
+import { Elements } from '@stripe/react-stripe-js'
+
+const stripePromise = loadStripe("pk_test_51SaNoG4Mhn1DfYnI8vdzApVMWHWKg7nIOJktVaxW8Hb3YppKv9XSxnVA0VHdsjpnsFklcUoDEG46TgsYCoL6x50t00bOKtzXjS");
 
 function App() {
 
@@ -41,10 +45,10 @@ function App() {
   )
 
   return (
-    <>
+    <Elements stripe={stripePromise}>
       <Toaster />
       <RouterProvider router={router} />
-    </>
+    </Elements>
   )
 }
 
