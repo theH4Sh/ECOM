@@ -42,23 +42,25 @@ const Home = () => {
       {/* CATEGORIES */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
         {[
-          { name: "Men", image: "/men.jpg" },
-          { name: "Women", image: "/mikasa.jpg" },
-          { name: "Kids", image: "/lego.jpg" },
+          { name: "Men", value: "men", image: "/men.jpg" },
+          { name: "Women", value: "women", image: "/mikasa.jpg" },
+          { name: "Kids", value: "kids", image: "/lego.jpg" },
         ].map((cat) => (
-          <div
-            key={cat.name}
-            className="relative rounded-xl overflow-hidden cursor-pointer group"
-          >
-            <img
-              src={cat.image}
-              alt={cat.name}
-              className="h-48 w-full object-cover group-hover:scale-105 transition-transform"
-            />
-            <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
-              <h2 className="text-white text-2xl font-bold">{cat.name}</h2>
-            </div>
-          </div>
+            <Link to={`/category/${cat.value}`}>
+              <div
+                key={cat.name}
+                className="relative rounded-xl overflow-hidden cursor-pointer group"
+              >
+                <img
+                  src={cat.image}
+                  alt={cat.name}
+                  className="h-48 w-full object-cover group-hover:scale-105 transition-transform"
+                />
+                <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
+                  <h2 className="text-white text-2xl font-bold">{cat.name}</h2>
+                </div>
+              </div>
+            </ Link>
         ))}
       </div>
 

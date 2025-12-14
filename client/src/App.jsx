@@ -15,6 +15,7 @@ import AdminProducts from './pages/admin/AdminProducts.jsx'
 import AdminOrders from './pages/admin/AdminOrders.jsx'
 import { loadStripe } from '@stripe/stripe-js'
 import { Elements } from '@stripe/react-stripe-js'
+import CategoryPage from './pages/CategoryPage.jsx'
 
 const stripePromise = loadStripe("pk_test_51SaNoG4Mhn1DfYnI8vdzApVMWHWKg7nIOJktVaxW8Hb3YppKv9XSxnVA0VHdsjpnsFklcUoDEG46TgsYCoL6x50t00bOKtzXjS");
 
@@ -32,6 +33,7 @@ function App() {
           <Route path="product/:id" element={<Product />} />
           <Route path="orders" element={ auth.isAuthenticated ? <OrderHistory /> : <Navigate to='/' />} />
           <Route path="checkout" element={ auth.isAuthenticated ? <Checkout /> : <Navigate to='/' />} />
+          <Route path="/category/:category" element={<CategoryPage />} />
         </Route>
 
         {/* Admin Routes */}
