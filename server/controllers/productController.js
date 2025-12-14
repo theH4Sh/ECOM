@@ -1,5 +1,7 @@
 const Product = require('../models/Product')
 const mongoose = require('mongoose')
+const path = require("path")
+const fs = require("fs")
 
 const getAllProducts = async (req, res, next) => {
   try {
@@ -93,7 +95,7 @@ const deleteProduct = async (req, res, next) => {
 
 const addProduct = async (req, res, next) => {
     try {
-        const { name, price, description, quantity } = req.body
+        const { name, price, description, quantity, category } = req.body
 
         if (!req.file) {
             return res.status(400).json({error: 'Product Image Required'})
@@ -105,6 +107,7 @@ const addProduct = async (req, res, next) => {
             description,
             quantity,
             image: req.file.filename,
+            category
         })
         
         await newProduct.save()
@@ -114,4 +117,37 @@ const addProduct = async (req, res, next) => {
     }
 }
 
-module.exports = { getAllProducts, getProduct, deleteProduct, addProduct }
+const updateProduct = async (req, res, next) => {
+  try {
+    const product = await Product.findById(req.params.id);
+
+    if (!product) {
+      return res.status(404).json({ message: "Product not found" });
+    }
+
+    // Update fields if provided
+    product.name = req.body.name || product.name;
+    product.description = req.body.description || product.description;
+    product.price = req.body.price || product.price;
+    product.quantity = req.body.quantity || product.quantity;
+    product.category = req.body.category || product.category;
+
+    // If new image uploaded
+    if (req.file) {
+      // delete old image
+      const oldImagePath = path.join(__dirname, "..", "images", product.image);
+      if (fs.existsSync(oldImagePath)) {
+        fs.unlinkSync(oldImagePath);
+      }
+
+      product.image = req.file.filename;
+    }
+
+    const updatedProduct = await product.save();
+    res.status(200).json(updatedProduct);
+  } catch (error) {
+    next(error);
+  }
+};
+
+module.exports = { getAllProducts, getProduct, deleteProduct, addProduct, updateProduct }
