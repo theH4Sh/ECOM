@@ -6,13 +6,19 @@ const fs = require("fs")
 const getAllProducts = async (req, res, next) => {
   try {
     const page = Number(req.query.page) || 1;
+    const category = req.query.category;
     const limit = Number(req.query.limit) || 10;
     const skip = (page - 1) * limit;
 
+    // Build match stage dynamically
+    const matchStage = {};
+    if (category) matchStage.category = category;
+
     const products = await Product.aggregate([
+      { $match: matchStage }, // <-- filter by category here
       {
         $lookup: {
-          from: "reviews",               // Mongo collection name
+          from: "reviews",        // Mongo collection name
           localField: "_id",
           foreignField: "product",
           as: "reviews"
@@ -44,6 +50,7 @@ const getAllProducts = async (req, res, next) => {
     next(error);
   }
 };
+
 
 const getProduct = async (req, res, next) => {
     try {
