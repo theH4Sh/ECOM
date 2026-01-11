@@ -36,6 +36,13 @@ const createOrder = async (req, res, next) => {
                 return res.status(404).json({ message: `Product not found` })
             }
 
+            // ✅ Check stock
+            if (product.quantity < item.quantity) {
+                return res.status(400).json({ 
+                    message: `Not enough stock for ${product.name}. Available: ${product.quantity}` 
+                })
+            }
+
             totalAmount += product.price * item.quantity
             
             orderItems.push({
@@ -91,7 +98,8 @@ const markPaid = async (req, res, next) => {
 
         for (const item of order.items) {
             const product = await Product.findById(item.product)
-            product.stock -= item.quantity
+            product.quantity -= item.quantity
+            if (product.quantity < 0) product.quantity = 0 // Prevent negative stock
             await product.save()
         }
 
