@@ -122,7 +122,7 @@ const CartDrawer = ({ open, onClose }) => {
           <button 
             onClick={handleCheckout}
             className={`w-full py-3 rounded-lg text-white 
-                ${!auth.isAuthenticated ? "bg-gray-400 cursor-not-allowed" : "bg-[#0B7C56] hover:bg-[#095c40]"}
+                ${!auth.isAuthenticated ? "bg-gray-400 cursor-not-allowed" : "bg-[#0B7C56] hover:bg-[#095c40] cursor-pointer"}
             `}
             disabled={!auth.isAuthenticated}
           >
