@@ -54,6 +54,24 @@ const Product = () => {
                 PKR {data.price}
               </p>
 
+            {/* Stock Info */}
+            <div className="mt-2 flex items-center gap-2">
+              {data.quantity === 0 ? (
+                <span className="flex items-center gap-1 bg-red-100 text-red-800 px-3 py-1 rounded-full font-semibold">
+                  ❌ Out of Stock
+                </span>
+              ) : data.quantity <= 3 ? (
+                <span className="flex items-center gap-1 bg-orange-100 text-orange-800 px-3 py-1 rounded-full font-semibold animate-pulse">
+                  ⚠️ Only {data.quantity} left!
+                </span>
+              ) : (
+                <span className="flex items-center gap-1 bg-green-100 text-green-800 px-3 py-1 rounded-full font-semibold">
+                  ✅ In Stock
+                </span>
+              )}
+            </div>
+
+
               <QuantityCounter
                 initial={1}
                 max={data.quantity}
