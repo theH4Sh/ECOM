@@ -16,6 +16,9 @@ import AdminOrders from './pages/admin/AdminOrders.jsx'
 import { loadStripe } from '@stripe/stripe-js'
 import { Elements } from '@stripe/react-stripe-js'
 import CategoryPage from './pages/CategoryPage.jsx'
+import ShippingReturns from './pages/ShippingReturns.jsx'
+import FAQ from './pages/FAQ.jsx'
+import Contact from './pages/Contact.jsx'
 
 const stripePromise = loadStripe("pk_test_51SaNoG4Mhn1DfYnI8vdzApVMWHWKg7nIOJktVaxW8Hb3YppKv9XSxnVA0VHdsjpnsFklcUoDEG46TgsYCoL6x50t00bOKtzXjS");
 
@@ -34,6 +37,9 @@ function App() {
           <Route path="orders" element={ auth.isAuthenticated ? <OrderHistory /> : <Navigate to='/' />} />
           <Route path="checkout" element={ auth.isAuthenticated ? <Checkout /> : <Navigate to='/' />} />
           <Route path="/category/:category" element={<CategoryPage />} />
+          <Route path="shipping" element={<ShippingReturns />} />
+          <Route path="faq" element={<FAQ />} />
+          <Route path="contact" element={<Contact />} />
         </Route>
 
         {/* Admin Routes */}
