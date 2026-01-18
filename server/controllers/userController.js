@@ -105,7 +105,7 @@ const forgotPassword = async (req, res, next) => {
         if (!user) return res.status(404).json({ message: "Email not found" })
 
         const token = jwt.sign({ _id: user._id }, process.env.SECRET, { expiresIn: '1h' });
-        const resetLink = `http://localhost:8000/api/auth/reset-password/${token}`
+        const resetLink = `http://localhost:5173/reset-password/${token}`
 
         const mail = {
             from: process.env.EMAIL_USER,

@@ -91,7 +91,7 @@ export default function Login() {
           </div>
           <button
             type="submit"
-            className="w-full py-2 px-4 bg-gray-800 hover:bg-gray-700 cursor-pointer text-white font-semibold rounded-lg transition duration-200"
+            className="w-full py-2 px-4 bg-[#0B7C56] hover:bg-[#095c40] cursor-pointer text-white font-semibold rounded-lg transition duration-200"
           >
             Log In
           </button>
@@ -100,6 +100,12 @@ export default function Login() {
           Don't have an account?{" "}
           <Link to='/signup' className="text-blue-700 hover:underline">
             Sign up
+          </Link>
+        </p>
+        
+        <p className="text-center text-sm text-gray-500">
+          <Link to='/forgot-password' className="text-blue-700 hover:underline">
+            Forgot password?{" "}
           </Link>
         </p>
       </div>
