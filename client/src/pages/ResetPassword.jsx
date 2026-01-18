@@ -48,21 +48,21 @@ export default function ResetPassword() {
     <div className="min-h-screen flex items-center justify-center">
       <form
         onSubmit={handleSubmit}
-        className="w-full max-w-sm bg-white p-6 rounded-xl shadow"
+        className="bg-slate-50 shadow-2xl rounded-2xl max-w-sm w-full md:w-96 p-8 space-y-6"
       >
         <h1 className="text-2xl font-semibold mb-4">Reset Password</h1>
 
         <input
           type="password"
           placeholder="New password"
-          className="w-full border rounded px-3 py-2 mb-4 focus:outline-none focus:ring"
+          className="mt-1 w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-gray-800"
           value={newPassword}
           onChange={(e) => setNewPassword(e.target.value)}
           required
         />
 
         <button
-          className="w-full bg-black text-white py-2 rounded hover:opacity-90 disabled:opacity-50"
+          className="w-full bg-[#0B7C56] hover:bg-[#095c40] text-white py-2 rounded-lg cursor-pointer hover:opacity-90 disabled:opacity-50"
           disabled={loading}
         >
           {loading ? "Resetting..." : "Reset Password"}
