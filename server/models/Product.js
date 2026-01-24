@@ -9,4 +9,11 @@ const productSchema = new mongoose.Schema({
   category: { type: String, required: true }
 }, { timestamps: true })
 
+productSchema.index({
+  name: "text",
+  description: "text",
+  category: "text"
+});
+
+
 module.exports = mongoose.model('Product', productSchema)

@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import Card from "../components/Card";
 import { useFetch } from "../hooks/useFetch";
+import SearchBar from "../components/SearchBar";
 
 const LIMIT = 10;
 
@@ -38,6 +39,9 @@ const Home = () => {
           className="w-full max-w-xl border rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#0B7C56]"
         />
       </div>
+
+      {/* Search bar */}
+      <SearchBar />
 
       {/* CATEGORIES */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">

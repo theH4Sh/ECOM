@@ -3,6 +3,95 @@ const mongoose = require('mongoose')
 const path = require("path")
 const fs = require("fs")
 
+const searchProducts = async (req, res, next) => {
+  try {
+    const {
+      q,              // search keyword
+      category,
+      minPrice,
+      maxPrice,
+      page = 1,
+      limit = 10,
+      sort = "relevance" // relevance | price_low | price_high | newest
+    } = req.query;
+
+    const skip = (Number(page) - 1) * Number(limit);
+
+    const matchStage = {};
+
+    // Text search
+    if (q) {
+      matchStage.$text = { $search: q };
+    }
+
+    // Filters
+    if (category) matchStage.category = category;
+
+    if (minPrice || maxPrice) {
+      matchStage.price = {};
+      if (minPrice) matchStage.price.$gte = Number(minPrice);
+      if (maxPrice) matchStage.price.$lte = Number(maxPrice);
+    }
+
+    // Sorting logic
+    let sortStage = {};
+    if (q && sort === "relevance") {
+      sortStage = { score: { $meta: "textScore" } };
+    } else if (sort === "price_low") {
+      sortStage = { price: 1 };
+    } else if (sort === "price_high") {
+      sortStage = { price: -1 };
+    } else if (sort === "newest") {
+      sortStage = { createdAt: -1 };
+    }
+
+    const pipeline = [
+      { $match: matchStage },
+
+      // Add text score if searching
+      ...(q
+        ? [{
+            $addFields: { score: { $meta: "textScore" } }
+          }]
+        : []),
+
+      // Join reviews (same as your main route)
+      {
+        $lookup: {
+          from: "reviews",
+          localField: "_id",
+          foreignField: "product",
+          as: "reviews"
+        }
+      },
+      {
+        $addFields: {
+          reviewCount: { $size: "$reviews" },
+          averageRating: {
+            $cond: [
+              { $gt: [{ $size: "$reviews" }, 0] },
+              { $avg: "$reviews.rating" },
+              0
+            ]
+          }
+        }
+      },
+      { $project: { reviews: 0 } },
+
+      { $sort: Object.keys(sortStage).length ? sortStage : { createdAt: -1 } },
+      { $skip: skip },
+      { $limit: Number(limit) }
+    ];
+
+    const products = await Product.aggregate(pipeline);
+
+    res.status(200).json(products);
+  } catch (error) {
+    next(error);
+  }
+};
+
+
 const getAllProducts = async (req, res, next) => {
   try {
     const page = Number(req.query.page) || 1;
@@ -157,4 +246,4 @@ const updateProduct = async (req, res, next) => {
   }
 };
 
-module.exports = { getAllProducts, getProduct, deleteProduct, addProduct, updateProduct }
+module.exports = { getAllProducts, getProduct, deleteProduct, addProduct, updateProduct, searchProducts }

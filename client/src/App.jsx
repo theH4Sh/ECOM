@@ -21,6 +21,7 @@ import FAQ from './pages/FAQ.jsx'
 import Contact from './pages/Contact.jsx'
 import ForgotPassword from './pages/ForgotPassword.jsx'
 import ResetPassword from './pages/ResetPassword.jsx'
+import ProductSearch from './pages/ProductSearch.jsx'
 
 const stripePromise = loadStripe("pk_test_51SaNoG4Mhn1DfYnI8vdzApVMWHWKg7nIOJktVaxW8Hb3YppKv9XSxnVA0VHdsjpnsFklcUoDEG46TgsYCoL6x50t00bOKtzXjS");
 
@@ -44,6 +45,8 @@ function App() {
           <Route path="contact" element={<Contact />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/reset-password/:token" element={<ResetPassword />} />
+          {/* 🔍 SEARCH PAGE */}
+          <Route path="/search" element={<ProductSearch />} />
         </Route>
 
         {/* Admin Routes */}
