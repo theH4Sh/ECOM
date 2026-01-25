@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useState, useEffect, useRef } from "react";
 import { logout } from "../slice/authSlice";
 import CartDrawer from "./CartDrawer";
+import NotificationBell from "./NotificationBell";
 
 const Navbar = () => {
     const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
@@ -42,6 +43,9 @@ const Navbar = () => {
             </div>
 
             <div className="flex items-center gap-6">
+                {/* Notification Bell */}
+                <NotificationBell />
+                
                 {/* Cart */}
                 <div onClick={() => setShowCart(!showCart)}
                     className="cursor-pointer"
