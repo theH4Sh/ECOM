@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import Card from "../components/Card";
 import { useFetch } from "../hooks/useFetch";
 import SearchBar from "../components/SearchBar";
+import SkeletonCard from "../components/SkeletonCard";
 
 const LIMIT = 10;
 
@@ -74,7 +75,13 @@ const Home = () => {
           Products
         </h2>
 
-        {loading && <p>Loading...</p>}
+      {loading &&     
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
+          {Array.from({ length: 8 }).map((_, i) => (
+            <SkeletonCard key={i} />
+          ))}
+        </div>
+      }
         {error && <p className="text-red-500">{error.message}</p>}
 
         {filteredProducts?.length === 0 && (

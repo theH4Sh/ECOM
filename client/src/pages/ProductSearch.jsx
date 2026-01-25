@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import Card from "../components/Card";
+import SkeletonCard from "../components/SkeletonCard";
 
 export default function ProductSearch() {
   const [searchParams] = useSearchParams();
@@ -54,7 +55,13 @@ export default function ProductSearch() {
         Search Results {q && `for "${q}"`}
       </h2>
 
-      {loading && <p className="text-center">Loading...</p>}
+      {loading &&     
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
+          {Array.from({ length: 8 }).map((_, i) => (
+            <SkeletonCard key={i} />
+          ))}
+        </div>
+      }
       {error && <p className="text-center text-red-500">{error}</p>}
       {!loading && !error && products.length === 0 && (
         <p className="text-center text-gray-500">No products found</p>

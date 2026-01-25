@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useSelector } from "react-redux";
 import toast from "react-hot-toast";
 import { useFetch } from "../../hooks/useFetch";
+import SkeletonCard from "../../components/SkeletonCard";
 
 const LIMIT = 8;
 
@@ -130,7 +131,13 @@ const AdminProducts = () => {
     }
   };
 
-  if (loading) return <p className="text-center mt-10">Loading…</p>;
+  if (loading) return (
+    <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
+      {Array.from({ length: 8 }).map((_, i) => (
+        <SkeletonCard key={i} />
+      ))}
+    </div>
+  );
   if (error) return <p className="text-red-500">Failed to load products</p>;
 
   return (
