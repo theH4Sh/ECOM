@@ -1,6 +1,7 @@
 const mongoose = require('mongoose')
 const Order = require('../models/Order')
 const Product = require('../models/Product')
+const Notification = require("../models/Notification");
 
 const Stripe = require('stripe')
 const stripe = Stripe(process.env.STRIPE_SECRET)
@@ -139,27 +140,38 @@ const getAllOrders = async (req, res, next) => {
 }
 
 const updateOrderStatus = async (req, res, next) => {
-    try {
-        const { orderId } = req.params
-        const { status } = req.body
+  try {
+    const { orderId } = req.params;
+    const { status } = req.body;
 
-        if (!mongoose.Types.ObjectId.isValid(orderId)) {
-            return res.status(400).json({ message: 'Invalid order ID' })
-        }
-
-        const order = await Order.findById(orderId)
-        if (!order) {
-            return res.status(404).json({ message: 'Order not found' })
-        }
-
-        order.orderStatus = status
-        await order.save()
-
-        res.status(200).json({ message: 'Order status updated successfully', order })
-    } catch (error) {
-        next(error)
+    if (!mongoose.Types.ObjectId.isValid(orderId)) {
+      return res.status(400).json({ message: 'Invalid order ID' });
     }
-}
+
+    const order = await Order.findById(orderId).populate("user");
+    if (!order) {
+      return res.status(404).json({ message: 'Order not found' });
+    }
+
+    order.orderStatus = status;
+    await order.save();
+
+    // 🔔 CREATE NOTIFICATION FOR USER
+    await Notification.create({
+      user: order.user._id,
+      message: `Your order (${order._id}) status has been updated to "${status}"`,
+      type: "order"
+    });
+
+    res.status(200).json({ 
+      message: 'Order status updated successfully', 
+      order 
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 
 module.exports = {
     createOrder,
