@@ -27,22 +27,14 @@ const Home = () => {
     <div className="max-w-7xl mx-auto px-6 py-10 space-y-14">
 
       {/* SEARCH / HERO */}
-      <div className="bg-gray-100 rounded-2xl p-8 space-y-6">
+      <div className="bg-gray-100 rounded-2xl p-8 space-y-6 flex flex-col items-center">
         <h1 className="text-3xl md:text-4xl font-bold text-gray-900">
           Discover Your Style
         </h1>
 
-        <input
-          type="text"
-          placeholder="Search products..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          className="w-full max-w-xl border rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#0B7C56]"
-        />
+        {/* Search bar */}
+        <SearchBar />
       </div>
-
-      {/* Search bar */}
-      <SearchBar />
 
       {/* CATEGORIES */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
