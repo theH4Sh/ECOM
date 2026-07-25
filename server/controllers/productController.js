@@ -15,7 +15,9 @@ const searchProducts = async (req, res, next) => {
       sort = "relevance" // relevance | price_low | price_high | newest
     } = req.query;
 
-    const skip = (Number(page) - 1) * Number(limit);
+    const limitNum = Number(limit);
+    const pageNum = Number(page);
+    const skip = (pageNum - 1) * limitNum;
 
     const matchStage = {};
 
@@ -45,47 +47,65 @@ const searchProducts = async (req, res, next) => {
       sortStage = { createdAt: -1 };
     }
 
-    const pipeline = [
+    const baseStages = [
       { $match: matchStage },
-
-      // Add text score if searching
       ...(q
         ? [{
             $addFields: { score: { $meta: "textScore" } }
           }]
         : []),
-
-      // Join reviews (same as your main route)
-      {
-        $lookup: {
-          from: "reviews",
-          localField: "_id",
-          foreignField: "product",
-          as: "reviews"
-        }
-      },
-      {
-        $addFields: {
-          reviewCount: { $size: "$reviews" },
-          averageRating: {
-            $cond: [
-              { $gt: [{ $size: "$reviews" }, 0] },
-              { $avg: "$reviews.rating" },
-              0
-            ]
-          }
-        }
-      },
-      { $project: { reviews: 0 } },
-
-      { $sort: Object.keys(sortStage).length ? sortStage : { createdAt: -1 } },
-      { $skip: skip },
-      { $limit: Number(limit) }
     ];
 
-    const products = await Product.aggregate(pipeline);
+    const [result] = await Product.aggregate([
+      ...baseStages,
+      {
+        $facet: {
+          products: [
+            {
+              $lookup: {
+                from: "reviews",
+                localField: "_id",
+                foreignField: "product",
+                as: "reviews"
+              }
+            },
+            {
+              $addFields: {
+                reviewCount: { $size: "$reviews" },
+                averageRating: {
+                  $cond: [
+                    { $gt: [{ $size: "$reviews" }, 0] },
+                    { $avg: "$reviews.rating" },
+                    0
+                  ]
+                }
+              }
+            },
+            { $project: { reviews: 0 } },
+            { $sort: Object.keys(sortStage).length ? sortStage : { createdAt: -1 } },
+            { $skip: skip },
+            { $limit: limitNum }
+          ],
+          totalCount: [{ $count: "count" }]
+        }
+      }
+    ]);
 
-    res.status(200).json(products);
+    const products = result.products;
+    const total = result.totalCount[0]?.count || 0;
+    const totalPages = Math.max(1, Math.ceil(total / limitNum));
+
+    res.status(200).json({
+      products,
+      pagination: {
+        page: pageNum,
+        limit: limitNum,
+        total,
+        totalPages,
+        hasNextPage: pageNum < totalPages,
+        hasPrevPage: pageNum > 1
+      }
+    });
   } catch (error) {
     next(error);
   }
