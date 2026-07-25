@@ -32,8 +32,10 @@ const loginUser = async (req, res, next) => {
 const signUpUser = async (req, res, next) => {
     const {username, email, password} = req.body
 
+    let user;
+
     try {
-        const user = await User.signup(username, email, password)
+        user = await User.signup(username, email, password)
 
         //token
         const token = jwt.sign({ _id: user._id }, process.env.SECRET, { expiresIn: '1h' });
@@ -55,6 +57,9 @@ const signUpUser = async (req, res, next) => {
 
         res.status(201).json({ message: `${username} registered successfully. Please check your email and verify`, token })
     } catch (error) {
+        if (user) {
+            await User.findByIdAndDelete(user._id)
+        }
         next(error)
     }
 }
