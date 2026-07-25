@@ -9,6 +9,7 @@ import toast from "react-hot-toast";
 import { usePostReview } from "../hooks/usePostReview";
 import { useReviews } from "../hooks/useReviews";
 import { getErrorMessage } from "../lib/api";
+import { useBreadcrumbLabel } from "../context/BreadcrumbContext";
 
 const Product = () => {
   const dispatch = useDispatch();
@@ -19,6 +20,8 @@ const Product = () => {
   const { data, loading, error } = useFetch(
     import.meta.env.VITE_API + "product/" + params.id
   );
+
+  useBreadcrumbLabel(data?.name);
 
   const { reviews, loading: reviewsLoading, error: reviewsError, addReview, removeReview } =
     useReviews(params.id);

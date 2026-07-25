@@ -22,6 +22,7 @@ import Contact from './pages/Contact.jsx'
 import ForgotPassword from './pages/ForgotPassword.jsx'
 import ResetPassword from './pages/ResetPassword.jsx'
 import ProductSearch from './pages/ProductSearch.jsx'
+import { BreadcrumbProvider } from './context/BreadcrumbContext.jsx'
 
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY);
 
@@ -60,10 +61,12 @@ function App() {
   )
 
   return (
-    <Elements stripe={stripePromise}>
-      <Toaster />
-      <RouterProvider router={router} />
-    </Elements>
+    <BreadcrumbProvider>
+      <Elements stripe={stripePromise}>
+        <Toaster />
+        <RouterProvider router={router} />
+      </Elements>
+    </BreadcrumbProvider>
   )
 }
 

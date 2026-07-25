@@ -1,5 +1,6 @@
 import { Link, Outlet, useLocation } from "react-router-dom";
 import { useState } from "react";
+import Breadcrumbs from "../components/Breadcrumbs";
 
 const AdminLayout = () => {
   const location = useLocation();
@@ -104,6 +105,7 @@ const AdminLayout = () => {
 
         {/* PAGE CONTENT */}
         <main className="flex-1 p-4 sm:p-6 lg:p-8">
+          <Breadcrumbs variant="admin" />
           <Outlet />
         </main>
       </div>
