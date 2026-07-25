@@ -23,7 +23,7 @@ import ForgotPassword from './pages/ForgotPassword.jsx'
 import ResetPassword from './pages/ResetPassword.jsx'
 import ProductSearch from './pages/ProductSearch.jsx'
 
-const stripePromise = loadStripe("pk_test_51SaNoG4Mhn1DfYnI8vdzApVMWHWKg7nIOJktVaxW8Hb3YppKv9XSxnVA0VHdsjpnsFklcUoDEG46TgsYCoL6x50t00bOKtzXjS");
+const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY);
 
 function App() {
 
