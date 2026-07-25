@@ -21,6 +21,7 @@ import FAQ from './pages/FAQ.jsx'
 import Contact from './pages/Contact.jsx'
 import ForgotPassword from './pages/ForgotPassword.jsx'
 import ResetPassword from './pages/ResetPassword.jsx'
+import VerifyEmail from './pages/VerifyEmail.jsx'
 import ProductSearch from './pages/ProductSearch.jsx'
 import { BreadcrumbProvider } from './context/BreadcrumbContext.jsx'
 
@@ -46,6 +47,7 @@ function App() {
           <Route path="contact" element={<Contact />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/reset-password/:token" element={<ResetPassword />} />
+          <Route path="/verify-email/:token" element={<VerifyEmail />} />
           {/* 🔍 SEARCH PAGE */}
           <Route path="/search" element={<ProductSearch />} />
         </Route>

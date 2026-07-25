@@ -11,6 +11,7 @@ const ROUTE_LABELS = {
   contact: "Contact",
   search: "Search",
   "forgot-password": "Forgot Password",
+  "verify-email": "Verify Email",
 };
 
 const ADMIN_LABELS = {
@@ -75,6 +76,11 @@ const buildStoreCrumbs = (pathname, searchParams, dynamicLabel) => {
 
   if (segments[0] === "reset-password") {
     crumbs.push({ label: "Reset Password", to: pathname });
+    return crumbs;
+  }
+
+  if (segments[0] === "verify-email") {
+    crumbs.push({ label: "Verify Email", to: pathname });
     return crumbs;
   }
 
