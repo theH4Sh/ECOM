@@ -19,6 +19,8 @@ const AdminProducts = () => {
   const [page, setPage] = useState(1);
   const [showModal, setShowModal] = useState(false);
   const [editingProduct, setEditingProduct] = useState(null);
+  const [productToDelete, setProductToDelete] = useState(null);
+  const [deleting, setDeleting] = useState(false);
 
   const [formData, setFormData] = useState({
     name: "",
@@ -117,12 +119,13 @@ const AdminProducts = () => {
     };
 
 
-  const handleDelete = async (id) => {
-    if (!confirm("Delete this product?")) return;
+  const handleDelete = async () => {
+    if (!productToDelete) return;
 
+    setDeleting(true);
     try {
       const res = await fetch(
-        `http://localhost:8000/api/product/${id}`,
+        `http://localhost:8000/api/product/${productToDelete._id}`,
         {
           method: "DELETE",
           headers: { Authorization: `Bearer ${token}` },
@@ -135,9 +138,12 @@ const AdminProducts = () => {
       }
 
       toast.success("Product deleted");
+      setProductToDelete(null);
       refetch();
     } catch (err) {
       toastApiError(err, "Delete failed");
+    } finally {
+      setDeleting(false);
     }
   };
 
@@ -223,7 +229,7 @@ const AdminProducts = () => {
                         Edit
                     </button>
                     <button
-                        onClick={() => handleDelete(p._id)}
+                        onClick={() => setProductToDelete(p)}
                         className="flex-1 text-sm bg-red-500 text-white py-1.5 rounded-lg hover:bg-red-600 transition"
                     >
                         Delete
@@ -422,6 +428,43 @@ const AdminProducts = () => {
             </div>
         </div>
         )}
+
+      {productToDelete && (
+        <div className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center px-4">
+          <div className="bg-white w-full max-w-md rounded-xl shadow-2xl overflow-hidden">
+            <div className="px-6 py-4 border-b">
+              <h2 className="text-xl font-semibold text-gray-800">Delete Product</h2>
+              <p className="text-sm text-gray-500 mt-1">This action cannot be undone.</p>
+            </div>
+
+            <div className="p-6">
+              <p className="text-gray-700">
+                Are you sure you want to delete{" "}
+                <span className="font-semibold">{productToDelete.name}</span>?
+              </p>
+            </div>
+
+            <div className="flex justify-end gap-3 px-6 py-4 border-t bg-gray-50">
+              <button
+                type="button"
+                onClick={() => setProductToDelete(null)}
+                disabled={deleting}
+                className="px-5 py-2.5 rounded-lg border text-gray-700 hover:bg-gray-100 disabled:opacity-50"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={handleDelete}
+                disabled={deleting}
+                className="px-5 py-2.5 rounded-lg bg-red-500 text-white font-semibold hover:bg-red-600 disabled:opacity-50"
+              >
+                {deleting ? "Deleting..." : "Delete Product"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
     </div>
   );
