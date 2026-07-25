@@ -40,7 +40,7 @@ const signUpUser = async (req, res, next) => {
         //token
         const token = jwt.sign({ _id: user._id }, process.env.SECRET, { expiresIn: '1h' });
 
-        const verificationLink = `http://localhost:8000/api/auth/verify/${token}`
+        const verificationLink = `${process.env.VERIFY_EMAIL_LINK}${token}`
 
 
         const mail = await transporter.sendMail({
@@ -110,7 +110,7 @@ const forgotPassword = async (req, res, next) => {
         if (!user) return res.status(404).json({ message: "Email not found" })
 
         const token = jwt.sign({ _id: user._id }, process.env.SECRET, { expiresIn: '1h' });
-        const resetLink = `http://localhost:5173/reset-password/${token}`
+        const resetLink = `${process.env.RESET_PASSWORD_LINK}${token}`
 
         const mail = {
             from: process.env.EMAIL_USER,
