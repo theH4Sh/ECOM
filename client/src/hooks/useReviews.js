@@ -34,5 +34,9 @@ export const useReviews = (productId) => {
     setReviews((prev) => [review, ...prev]);
   }, []);
 
-  return { reviews, loading, error, addReview, refetch: fetchReviews };
+  const removeReview = useCallback((reviewId) => {
+    setReviews((prev) => prev.filter((review) => review._id !== reviewId));
+  }, []);
+
+  return { reviews, loading, error, addReview, removeReview, refetch: fetchReviews };
 };

@@ -2,28 +2,65 @@ import { Link, useNavigate, useParams } from "react-router";
 import { useFetch } from "../hooks/useFetch";
 import QuantityCounter from "../components/QuantityCounter";
 import { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { addToCart } from "../slice/cartSlice";
 import ReviewForm from "../components/ReviewForm";
 import toast from "react-hot-toast";
 import { usePostReview } from "../hooks/usePostReview";
 import { useReviews } from "../hooks/useReviews";
+import { getErrorMessage } from "../lib/api";
 
 const Product = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const params = useParams();
+  const { username, token, isAuthenticated } = useSelector((state) => state.auth);
 
   const { data, loading, error } = useFetch(
     import.meta.env.VITE_API + "product/" + params.id
   );
 
-  const { reviews, loading: reviewsLoading, error: reviewsError, addReview } =
+  const { reviews, loading: reviewsLoading, error: reviewsError, addReview, removeReview } =
     useReviews(params.id);
 
   const { sendReview } = usePostReview(params.id);
 
   const [quantity, setQuantity] = useState(1);
+  const [confirmDeleteId, setConfirmDeleteId] = useState(null);
+  const [deletingReviewId, setDeletingReviewId] = useState(null);
+
+  const isOwnReview = (review) =>
+    isAuthenticated && review.user?.username === username;
+
+  const handleDeleteReview = async (reviewId) => {
+    if (!token) {
+      toast.error("You must be logged in to delete a review");
+      return;
+    }
+
+    setDeletingReviewId(reviewId);
+    try {
+      const res = await fetch(`${import.meta.env.VITE_API}reviews/${reviewId}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(getErrorMessage(data, "Failed to delete review"));
+      }
+
+      removeReview(reviewId);
+      setConfirmDeleteId(null);
+      toast.success("Review deleted");
+    } catch (err) {
+      toast.error(err.message || "Failed to delete review");
+    } finally {
+      setDeletingReviewId(null);
+    }
+  };
 
   return (
     <div className="max-w-6xl mx-auto px-4 py-8 sm:py-10">
@@ -170,17 +207,66 @@ const Product = () => {
                   key={r._id}
                   className="border border-gray-200 rounded-2xl p-5 bg-white shadow-md hover:shadow-lg transition-shadow duration-300"
                 >
-                  <div className="flex items-center justify-between mb-2">
+                  <div className="flex items-start justify-between gap-3 mb-2">
                     <p className="font-semibold">
                       {r.user?.name || r.user?.username}
                     </p>
 
-                    <p className="text-yellow-500 text-lg sm:text-xl">
-                      {"★".repeat(r.rating)}
-                      <span className="text-gray-300">
-                        {"☆".repeat(5 - r.rating)}
-                      </span>
-                    </p>
+                    <div className="flex items-center gap-3 shrink-0">
+                      <p className="text-yellow-500 text-lg sm:text-xl">
+                        {"★".repeat(r.rating)}
+                        <span className="text-gray-300">
+                          {"☆".repeat(5 - r.rating)}
+                        </span>
+                      </p>
+
+                      {isOwnReview(r) && (
+                        confirmDeleteId === r._id ? (
+                          <div className="flex items-center gap-2 text-sm">
+                            <span className="text-gray-500">Delete?</span>
+                            <button
+                              type="button"
+                              onClick={() => handleDeleteReview(r._id)}
+                              disabled={deletingReviewId === r._id}
+                              className="text-red-600 font-medium hover:underline disabled:opacity-50"
+                            >
+                              {deletingReviewId === r._id ? "..." : "Yes"}
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => setConfirmDeleteId(null)}
+                              disabled={deletingReviewId === r._id}
+                              className="text-gray-600 hover:underline disabled:opacity-50"
+                            >
+                              No
+                            </button>
+                          </div>
+                        ) : (
+                          <button
+                            type="button"
+                            onClick={() => setConfirmDeleteId(r._id)}
+                            aria-label="Delete review"
+                            title="Delete review"
+                            className="p-1.5 rounded-lg text-red-500 hover:text-red-600 hover:bg-red-50 transition"
+                          >
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              strokeWidth={1.5}
+                              stroke="currentColor"
+                              className="w-5 h-5"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"
+                              />
+                            </svg>
+                          </button>
+                        )
+                      )}
+                    </div>
                   </div>
 
                   <p className="text-gray-700 text-sm sm:text-base">{r.comment}</p>
