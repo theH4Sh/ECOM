@@ -39,7 +39,9 @@ const { errorHandler, notFoundHandler } = require('./middleware/errorHandler')
 app.use(notFoundHandler)
 app.use(errorHandler)
 
-const port = 8000
-app.listen(port, () => {
-    console.log(`Listening on port: ${port}`)
-})
+// const port = 8000
+// app.listen(port, () => {
+//     console.log(`Listening on port: ${port}`)
+// })
+
+module.exports = app;
