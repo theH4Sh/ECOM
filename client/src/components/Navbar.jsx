@@ -38,9 +38,9 @@ const Navbar = () => {
 
     return ( 
         <div className="flex items-center justify-between p-4 border-b-3 border-gray-100 mb-6">
-            <div>
+            <Link to="/" className="hover:opacity-80 transition">
                 <h1 className="text-2xl font-extrabold text-[#0B7C56]">Shopz</h1>
-            </div>
+            </Link>
 
             <div className="flex items-center gap-6">
                 {/* Notification Bell */}
