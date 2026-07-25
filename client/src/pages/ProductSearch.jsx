@@ -128,7 +128,9 @@ export default function ProductSearch() {
           </p>
         </div>
 
-        <SearchBar defaultQuery={q} defaultCategory={category} />
+        <div className="flex justify-center w-full">
+          <SearchBar defaultQuery={q} defaultCategory={category} />
+        </div>
       </section>
 
       {!hasSearchCriteria && (
