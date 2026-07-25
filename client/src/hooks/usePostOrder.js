@@ -1,12 +1,13 @@
 import { useState } from "react";
 import { useSelector } from "react-redux";
+import { parseApiError } from "../lib/api";
 
 export const usePostOrder = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [data, setData] = useState(null);
 
-  const token = useSelector(state => state.auth.token); // just get the token
+  const token = useSelector(state => state.auth.token);
 
   const sendOrder = async ({ items, name, phone, address }) => {
     setLoading(true);
@@ -22,7 +23,9 @@ export const usePostOrder = () => {
         body: JSON.stringify({ items, name, phone, address })
       });
 
-      if (!response.ok) throw new Error("Failed to place order");
+      if (!response.ok) {
+        throw await parseApiError(response, "Failed to place order");
+      }
 
       const result = await response.json();
       setData(result);

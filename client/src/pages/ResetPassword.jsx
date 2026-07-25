@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import { getErrorMessage } from "../lib/api";
 
 export default function ResetPassword() {
   const { token } = useParams();
@@ -31,7 +32,7 @@ export default function ResetPassword() {
       const data = await res.json();
 
       if (!res.ok) {
-        throw new Error(data.error || "Reset failed");
+        throw new Error(getErrorMessage(data, "Reset failed"));
       }
 
       setMessage(data.message);

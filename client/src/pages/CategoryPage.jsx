@@ -20,7 +20,7 @@ const CategoryPage = () => {
           ))}
         </div>
   );
-  if (error) return <p className="text-red-500 text-center mt-10">Failed to load products</p>;
+  if (error) return <p className="text-red-500 text-center mt-10">{error.message}</p>;
 
   return (
     <div className="space-y-8 px-4 md:px-8">

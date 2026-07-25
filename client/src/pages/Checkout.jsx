@@ -3,6 +3,7 @@ import { useSelector } from "react-redux";
 import toast from "react-hot-toast";
 import { CardElement, useElements, useStripe } from "@stripe/react-stripe-js";
 import { usePostOrder } from "../hooks/usePostOrder";
+import { parseApiError, toastApiError } from "../lib/api";
 
 export default function Checkout() {
   const stripe = useStripe();
@@ -71,7 +72,7 @@ export default function Checkout() {
       }
 
       if (paymentResult.paymentIntent.status === "succeeded") {
-        await fetch(
+        const markPaidResponse = await fetch(
           import.meta.env.VITE_API + `order/mark-paid/${order._id}`,
           {
             method: "PUT",
@@ -82,10 +83,14 @@ export default function Checkout() {
           }
         );
 
+        if (!markPaidResponse.ok) {
+          throw await parseApiError(markPaidResponse, "Payment succeeded but order update failed");
+        }
+
         toast.success("Payment successful 🎉");
       }
     } catch (err) {
-      toast.error("Checkout failed");
+      toastApiError(err, "Checkout failed");
     }
   };
 

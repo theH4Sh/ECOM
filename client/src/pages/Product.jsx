@@ -150,7 +150,7 @@ const Product = () => {
                     await sendReview(review);
                     toast.success("Review submitted successfully");
                   } catch (err) {
-                    toast.error("Failed to submit review");
+                    toast.error(err.message || "Failed to submit review");
                   }
                 }}
               />
@@ -158,7 +158,7 @@ const Product = () => {
 
             {/* Review List */}
             {reviewsLoading && <p>Loading reviews...</p>}
-            {reviewsError && <p>Error loading reviews</p>}
+            {reviewsError && <p className="text-red-500">{reviewsError}</p>}
             {reviews.length === 0 && (
               <p className="text-gray-500">No reviews yet.</p>
             )}

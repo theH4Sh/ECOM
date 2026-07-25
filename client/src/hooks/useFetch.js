@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
+import { parseApiError } from "../lib/api";
 
 export const useFetch = (url) => {
 
@@ -12,6 +13,7 @@ export const useFetch = (url) => {
     useEffect(() => {
         const fetchData = async () => {
             setLoading(true);
+            setError(null);
             try {
                 const response = await fetch(url, {
                     method: 'GET',
@@ -25,7 +27,7 @@ export const useFetch = (url) => {
                     const jsonData = await response.json();
                     setData(jsonData);
                 } else {
-                    throw new Error('Error fetching data');
+                    throw await parseApiError(response, 'Error fetching data');
                 }
 
             } catch (error) {

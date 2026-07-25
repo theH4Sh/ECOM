@@ -88,7 +88,7 @@ export default function NotificationBell() {
 
           <div className="max-h-80 overflow-y-auto">
             {loading && <p className="p-4 text-center text-gray-500">Loading...</p>}
-            {error && <p className="p-4 text-center text-red-500">Failed to load notifications</p>}
+            {error && <p className="p-4 text-center text-red-500">{error.message}</p>}
             {!loading && !error && notificationsState.length === 0 && <p className="p-4 text-center text-gray-500">No notifications</p>}
 
             {!loading && !error && notificationsState.map((n) => (

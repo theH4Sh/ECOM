@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import Card from "../components/Card";
 import SkeletonCard from "../components/SkeletonCard";
+import { parseApiError } from "../lib/api";
 
 export default function ProductSearch() {
   const [searchParams] = useSearchParams();
@@ -32,14 +33,13 @@ export default function ProductSearch() {
         { cache: "no-store" }
       );
 
-      if (!res.ok) throw new Error("Failed to fetch products");
+      if (!res.ok) throw await parseApiError(res, "Failed to fetch products");
 
       const data = await res.json();
       setProducts(data);
       console.log("Fetched products:", data);
     } catch (err) {
-      console.error(err);
-      setError("Something went wrong while fetching products");
+      setError(err.message || "Something went wrong while fetching products");
     } finally {
       setLoading(false);
     }

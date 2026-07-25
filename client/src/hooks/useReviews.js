@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { getErrorMessage } from "../lib/api";
 
 export const useReviews = (productId) => {
   const [reviews, setReviews] = useState([]);
@@ -13,7 +14,9 @@ export const useReviews = (productId) => {
       try {
         const res = await fetch(`${import.meta.env.VITE_API}reviews/product/${productId}`);
         const data = await res.json();
-        if (!res.ok) throw new Error(data.error || "Failed to fetch reviews");
+        if (!res.ok) {
+          throw new Error(getErrorMessage(data, "Failed to fetch reviews"));
+        }
 
         setReviews(data.reviews || []);
       } catch (err) {

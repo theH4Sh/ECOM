@@ -34,14 +34,10 @@ app.use('/api/reviews', reviewRoutes)
 app.use('/api/order', orderRoutes)
 app.use("/api/notifications", notificationRoutes);
 
-//Error Handling
-app.use((err, req, res, next) => {
-    console.log(err.stack)
-    res.status(err.status || 500).json({
-        success: false,
-        message: err.message || 'Internal Server Error'
-    })
-})
+const { errorHandler, notFoundHandler } = require('./middleware/errorHandler')
+
+app.use(notFoundHandler)
+app.use(errorHandler)
 
 const port = 8000
 app.listen(port, () => {

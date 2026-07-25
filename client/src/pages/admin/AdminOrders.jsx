@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import toast from "react-hot-toast";
 import { useFetch } from "../../hooks/useFetch";
+import { getErrorMessage } from "../../lib/api";
 
 const AdminOrders = () => {
     const [orders, setOrders] = useState([]);
@@ -29,7 +30,7 @@ const AdminOrders = () => {
 
             if (!response.ok) {
                 const err = await response.json().catch(() => ({}));
-                toast.error(err.message || "Failed to update order status");
+                toast.error(getErrorMessage(err, "Failed to update order status"));
                 return;
             }
 
@@ -76,6 +77,14 @@ const AdminOrders = () => {
         return (
             <div className="flex items-center justify-center h-screen">
                 <div className="text-xl text-gray-600">Loading orders...</div>
+            </div>
+        );
+    }
+
+    if (error) {
+        return (
+            <div className="flex items-center justify-center h-screen">
+                <p className="text-red-500">{error.message}</p>
             </div>
         );
     }

@@ -1,6 +1,7 @@
 import { useState} from 'react';
 import toast from 'react-hot-toast';
 import { Link, useNavigate } from "react-router-dom";
+import { getErrorMessage, toastApiError } from '../lib/api';
 
 export default function SignUp() {
 
@@ -27,11 +28,7 @@ export default function SignUp() {
     .then((res) => {
       if (!res.ok) {
         return res.json().then((data) => {
-
-            const firstKey = Object.keys(data)[0]
-            const err = data[firstKey][0]
-            console.log(data[firstKey])
-            throw new Error(err)
+          throw new Error(getErrorMessage(data, 'Signup failed'))
         })
       }
       return res.json()
@@ -42,8 +39,7 @@ export default function SignUp() {
       navigate('/login')
     })
     .catch((err) => {
-      console.log("catch block: ", err.message)
-      toast.error(`${err}`)
+      toastApiError(err, 'Signup failed')
     })
   }
 

@@ -3,6 +3,7 @@ import { useSelector } from "react-redux";
 import toast from "react-hot-toast";
 import { useFetch } from "../../hooks/useFetch";
 import SkeletonCard from "../../components/SkeletonCard";
+import { getErrorMessage, toastApiError } from "../../lib/api";
 
 const LIMIT = 8;
 
@@ -98,14 +99,17 @@ const AdminProducts = () => {
         body,
         });
 
-        if (!res.ok) throw new Error();
+        if (!res.ok) {
+          const data = await res.json().catch(() => ({}));
+          throw new Error(getErrorMessage(data, "Something went wrong"));
+        }
 
         toast.success(editingProduct ? "Product updated" : "Product added");
         setShowModal(false);
         resetForm();
         reload();
-    } catch {
-        toast.error("Something went wrong");
+    } catch (err) {
+        toastApiError(err, "Something went wrong");
     }
     };
 
@@ -122,12 +126,15 @@ const AdminProducts = () => {
         }
       );
 
-      if (!res.ok) throw new Error();
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(getErrorMessage(data, "Delete failed"));
+      }
 
       toast.success("Product deleted");
       reload();
-    } catch {
-      toast.error("Delete failed");
+    } catch (err) {
+      toastApiError(err, "Delete failed");
     }
   };
 
@@ -138,7 +145,7 @@ const AdminProducts = () => {
       ))}
     </div>
   );
-  if (error) return <p className="text-red-500">Failed to load products</p>;
+  if (error) return <p className="text-red-500">{error.message}</p>;
 
   return (
     <div className="space-y-8">

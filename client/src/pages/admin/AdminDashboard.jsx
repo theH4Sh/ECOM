@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import toast from "react-hot-toast";
+import { parseApiError, toastApiError } from "../../lib/api";
 
 const AdminDashboard = () => {
     const [stats, setStats] = useState({
@@ -44,6 +45,8 @@ const AdminDashboard = () => {
                     totalRevenue,
                     recentOrders
                 }));
+            } else {
+                throw await parseApiError(ordersRes, "Failed to load orders");
             }
             
             if (productsRes.ok) {
@@ -52,10 +55,11 @@ const AdminDashboard = () => {
                     ...prev,
                     totalProducts: products.length
                 }));
+            } else {
+                throw await parseApiError(productsRes, "Failed to load products");
             }
         } catch (error) {
-            toast.error("Failed to load dashboard data");
-            console.error(error);
+            toastApiError(error, "Failed to load dashboard data");
         } finally {
             setLoading(false);
         }

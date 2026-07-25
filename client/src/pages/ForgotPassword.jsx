@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { getErrorMessage } from "../lib/api";
 
 export default function ForgotPassword() {
   const [email, setEmail] = useState("");
@@ -27,7 +28,7 @@ export default function ForgotPassword() {
       const data = await res.json();
 
       if (!res.ok) {
-        throw new Error(data.message || "Request failed");
+        throw new Error(getErrorMessage(data, "Request failed"));
       }
 
       setMessage(data.message);

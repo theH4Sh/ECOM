@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useSelector } from "react-redux";
+import { getErrorMessage } from "../lib/api";
 
 export const usePostReview = (productId) => {
   const [loading, setLoading] = useState(false);
@@ -30,7 +31,9 @@ export const usePostReview = (productId) => {
 
       const result = await res.json();
 
-      if (!res.ok) throw new Error(result.error || "Failed to submit review");
+      if (!res.ok) {
+        throw new Error(getErrorMessage(result, "Failed to submit review"));
+      }
 
       setData(result);
       setLoading(false);
