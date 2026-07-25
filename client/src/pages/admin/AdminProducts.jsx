@@ -291,11 +291,11 @@ const AdminProducts = () => {
                         name="image"
                         type="file"
                         onChange={handleChange}
-                        accept="image/*"
+                        accept="image/jpeg,image/png,image/webp"
                         className="text-sm"
                     />
                     <p className="text-xs text-gray-400 mt-2">
-                        JPG, PNG up to 5MB
+                        JPG, PNG, or WebP up to 5MB
                     </p>
                     </div>
                 </div>

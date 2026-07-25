@@ -33,7 +33,7 @@ const normalizeError = (err) => {
         return new AppError(err.message, 400)
     }
 
-    if (err.message === 'Only png and jpg images are allowed') {
+    if (err.message === 'Only JPG, PNG, and WebP images are allowed') {
         return new AppError(err.message, 400)
     }
 
