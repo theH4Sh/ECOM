@@ -281,22 +281,44 @@ const AdminProducts = () => {
             <form onSubmit={handleSubmit} className="p-6 grid grid-cols-1 md:grid-cols-3 gap-6">
 
                 {/* LEFT – IMAGE + CATEGORY */}
-                <div className="space-y-5">
-                <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                <div className="space-y-5 min-w-0">
+                <div className="min-w-0">
+                    <label htmlFor="product-image" className="block text-sm font-medium text-gray-700 mb-1">
                     Product Image
                     </label>
-                    <div className="border-2 border-dashed rounded-lg p-4 text-center">
+                    <div className="border-2 border-dashed rounded-lg p-4 text-center min-w-0 overflow-hidden">
+                    <label
+                        htmlFor="product-image"
+                        className="inline-block px-4 py-2 rounded-lg bg-[#0B7C56] text-white text-sm font-semibold cursor-pointer hover:bg-[#095c40] transition"
+                    >
+                        Choose image
+                    </label>
                     <input
+                        id="product-image"
                         name="image"
                         type="file"
                         onChange={handleChange}
                         accept="image/jpeg,image/png,image/webp"
-                        className="text-sm"
+                        className="sr-only"
                     />
-                    <p className="text-xs text-gray-400 mt-2">
+                    <p className="text-xs text-gray-400 mt-3">
                         JPG, PNG, or WebP up to 5MB
                     </p>
+                    {formData.image ? (
+                        <p
+                        className="text-xs text-gray-600 mt-2 truncate px-1"
+                        title={formData.image.name}
+                        >
+                        {formData.image.name}
+                        </p>
+                    ) : editingProduct?.image ? (
+                        <p
+                        className="text-xs text-gray-500 mt-2 truncate px-1"
+                        title={editingProduct.image}
+                        >
+                        Current: {editingProduct.image}
+                        </p>
+                    ) : null}
                     </div>
                 </div>
 
