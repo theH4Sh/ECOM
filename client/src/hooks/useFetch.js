@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { parseApiError } from "../lib/api";
 
@@ -7,8 +7,13 @@ export const useFetch = (url) => {
     const [data, setData] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [reloadKey, setReloadKey] = useState(0);
 
     const { token } = useSelector((state) => state.auth);
+
+    const refetch = useCallback(() => {
+        setReloadKey((key) => key + 1);
+    }, []);
     
     useEffect(() => {
         const fetchData = async () => {
@@ -38,6 +43,6 @@ export const useFetch = (url) => {
         }
 
         fetchData();
-    }, [url, token])
-    return { data, loading, error };
+    }, [url, token, reloadKey])
+    return { data, loading, error, refetch };
 }

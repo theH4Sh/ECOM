@@ -18,7 +18,7 @@ const Product = () => {
     import.meta.env.VITE_API + "product/" + params.id
   );
 
-  const { reviews, loading: reviewsLoading, error: reviewsError } =
+  const { reviews, loading: reviewsLoading, error: reviewsError, addReview } =
     useReviews(params.id);
 
   const { sendReview } = usePostReview(params.id);
@@ -147,7 +147,8 @@ const Product = () => {
               <ReviewForm
                 onSubmit={async (review) => {
                   try {
-                    await sendReview(review);
+                    const newReview = await sendReview(review);
+                    addReview(newReview);
                     toast.success("Review submitted successfully");
                   } catch (err) {
                     toast.error(err.message || "Failed to submit review");
@@ -159,7 +160,7 @@ const Product = () => {
             {/* Review List */}
             {reviewsLoading && <p>Loading reviews...</p>}
             {reviewsError && <p className="text-red-500">{reviewsError}</p>}
-            {reviews.length === 0 && (
+            {!reviewsLoading && !reviewsError && reviews.length === 0 && (
               <p className="text-gray-500">No reviews yet.</p>
             )}
 

@@ -29,7 +29,7 @@ const AdminProducts = () => {
     image: null,
   });
 
-  const { data: products = [], loading, error } = useFetch(
+  const { data: products = [], loading, error, refetch } = useFetch(
     `http://localhost:8000/api/product?page=${page}&limit=${LIMIT}`
   );
 
@@ -71,8 +71,6 @@ const AdminProducts = () => {
         }));
     };
 
-    const reload = () => setPage((p) => p);
-
     const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -107,7 +105,12 @@ const AdminProducts = () => {
         toast.success(editingProduct ? "Product updated" : "Product added");
         setShowModal(false);
         resetForm();
-        reload();
+
+        if (!editingProduct && page !== 1) {
+          setPage(1);
+        } else {
+          refetch();
+        }
     } catch (err) {
         toastApiError(err, "Something went wrong");
     }
@@ -132,7 +135,7 @@ const AdminProducts = () => {
       }
 
       toast.success("Product deleted");
-      reload();
+      refetch();
     } catch (err) {
       toastApiError(err, "Delete failed");
     }
