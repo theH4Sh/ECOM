@@ -18,6 +18,10 @@ const notificationSchema = new mongoose.Schema({
     type: String, 
     enum: ["order", "system"], 
     default: "order" 
+  },
+  order: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Order"
   }
 }, { timestamps: true });
 

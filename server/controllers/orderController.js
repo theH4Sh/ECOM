@@ -104,6 +104,13 @@ const markPaid = async (req, res, next) => {
             await product.save()
         }
 
+        await Notification.create({
+            user: order.user,
+            message: `Your order #${order._id.toString().slice(-6).toUpperCase()} has been placed successfully`,
+            type: "order",
+            order: order._id
+        })
+
         res.status(201).json({ message: "Order marked as paid", order})
     } catch (error) {
         next(error)
@@ -159,8 +166,9 @@ const updateOrderStatus = async (req, res, next) => {
     // 🔔 CREATE NOTIFICATION FOR USER
     await Notification.create({
       user: order.user._id,
-      message: `Your order (${order._id}) status has been updated to "${status}"`,
-      type: "order"
+      message: `Your order #${order._id.toString().slice(-6).toUpperCase()} is now "${status}"`,
+      type: "order",
+      order: order._id
     });
 
     res.status(200).json({ 

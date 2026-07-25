@@ -1,13 +1,17 @@
 import { useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import { CardElement, useElements, useStripe } from "@stripe/react-stripe-js";
 import { usePostOrder } from "../hooks/usePostOrder";
 import { parseApiError, toastApiError } from "../lib/api";
+import { clearCart } from "../slice/cartSlice";
 
 export default function Checkout() {
   const stripe = useStripe();
   const elements = useElements();
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const cartItems = useSelector((state) => state.cart.items);
   const totalAmount = useSelector((state) => state.cart.totalAmount);
@@ -87,7 +91,9 @@ export default function Checkout() {
           throw await parseApiError(markPaidResponse, "Payment succeeded but order update failed");
         }
 
-        toast.success("Payment successful 🎉");
+        dispatch(clearCart());
+        toast.success("Order placed successfully!");
+        navigate("/orders");
       }
     } catch (err) {
       toastApiError(err, "Checkout failed");
