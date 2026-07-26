@@ -265,13 +265,13 @@ const AdminProducts = () => {
         </button>
       </div>
 
-      {/* MODAL – FIXED UI */}
+      {/* MODAL */}
       {showModal && (
-        <div className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center px-4">
-            <div className="bg-white w-full max-w-3xl rounded-xl shadow-2xl overflow-hidden">
+        <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/60 p-0 sm:items-center sm:p-4">
+            <div className="flex max-h-[90vh] w-full max-w-3xl flex-col overflow-hidden rounded-t-2xl bg-white shadow-2xl sm:rounded-xl">
             
             {/* HEADER */}
-            <div className="flex items-center justify-between px-6 py-4 border-b">
+            <div className="flex shrink-0 items-center justify-between border-b px-4 py-4 sm:px-6">
                 <div>
                 <h2 className="text-xl font-semibold text-gray-800">
                     {editingProduct ? "Edit Product" : "Add Product"}
@@ -281,15 +281,18 @@ const AdminProducts = () => {
                 </p>
                 </div>
                 <button
+                type="button"
                 onClick={() => setShowModal(false)}
-                className="text-gray-400 hover:text-gray-600 text-2xl leading-none"
+                className="text-2xl leading-none text-gray-400 hover:text-gray-600"
                 >
                 ×
                 </button>
             </div>
 
             {/* BODY */}
-            <form onSubmit={handleSubmit} className="p-6 grid grid-cols-1 md:grid-cols-3 gap-6">
+            <form onSubmit={handleSubmit} className="flex min-h-0 flex-1 flex-col">
+            <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain p-4 sm:p-6">
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
 
                 {/* LEFT – IMAGE + CATEGORY */}
                 <div className="space-y-5 min-w-0">
@@ -412,19 +415,21 @@ const AdminProducts = () => {
                     </div>
                 </div>
                 </div>
+            </div>
+            </div>
 
                 {/* FOOTER */}
-                <div className="md:col-span-3 flex justify-end gap-3 pt-4 border-t">
+                <div className="flex shrink-0 flex-col-reverse gap-3 border-t bg-white px-4 py-4 sm:flex-row sm:justify-end sm:px-6">
                 <button
                     type="button"
                     onClick={() => setShowModal(false)}
-                    className="px-5 py-2.5 rounded-lg border text-gray-700 hover:bg-gray-100"
+                    className="rounded-lg border px-5 py-2.5 text-gray-700 hover:bg-gray-100"
                 >
                     Cancel
                 </button>
                 <button
                     type="submit"
-                    className="px-6 py-2.5 rounded-lg bg-[#0B7C56] text-white font-semibold hover:bg-[#095c40]"
+                    className="rounded-lg bg-[#0B7C56] px-6 py-2.5 font-semibold text-white hover:bg-[#095c40]"
                 >
                     {editingProduct ? "Update Product" : "Add Product"}
                 </button>

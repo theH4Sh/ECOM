@@ -220,8 +220,8 @@ const AdminOrders = () => {
 
       {selectedOrder && (
         <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/50 p-0 sm:items-center sm:p-4">
-          <div className="max-h-[92vh] w-full overflow-y-auto rounded-t-2xl bg-white sm:max-w-2xl sm:rounded-xl">
-            <div className="sticky top-0 z-10 flex items-center justify-between border-b bg-white px-4 py-4 sm:px-6">
+          <div className="flex max-h-[90vh] w-full flex-col overflow-hidden rounded-t-2xl bg-white sm:max-w-2xl sm:rounded-xl">
+            <div className="flex shrink-0 items-center justify-between border-b px-4 py-4 sm:px-6">
               <h2 className="text-xl font-bold text-gray-800 sm:text-2xl">Order Details</h2>
               <button
                 onClick={() => setSelectedOrder(null)}
@@ -241,7 +241,7 @@ const AdminOrders = () => {
               </button>
             </div>
 
-            <div className="space-y-6 p-4 sm:p-6">
+            <div className="min-h-0 flex-1 space-y-6 overflow-y-auto overscroll-contain p-4 sm:p-6">
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <div>
                   <p className="text-sm text-gray-600">Order ID</p>
