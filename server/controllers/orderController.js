@@ -121,10 +121,6 @@ const getOrders = async (req, res, next) => {
     try {
         const userId = req.user._id
         const orders = await Order.find({ user: userId }).populate('items.product').sort({ createdAt: -1 })
-        
-        if (orders.length === 0) {
-            return res.status(404).json({ message: 'No orders found for this user'})
-        }
 
         res.status(200).json(orders)
     } catch (error) {
@@ -135,10 +131,6 @@ const getOrders = async (req, res, next) => {
 const getAllOrders = async (req, res, next) => {
     try {
         const orders = await Order.find().populate('user').populate('items.product').sort({ createdAt: -1 })
-        
-        if (orders.length === 0) {
-            return res.status(404).json({ message: 'No orders found'})
-        }
 
         res.status(200).json(orders)
     } catch (error) {
