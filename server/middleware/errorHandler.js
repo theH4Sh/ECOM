@@ -1,8 +1,23 @@
 const AppError = require('../utils/AppError')
 
+const isDatabaseConnectionError = (err) => {
+    return [
+        'MongoServerSelectionError',
+        'MongoNetworkError',
+        'MongooseServerSelectionError',
+    ].includes(err.name)
+}
+
 const normalizeError = (err) => {
     if (err instanceof AppError || err.status) {
         return err
+    }
+
+    if (isDatabaseConnectionError(err)) {
+        return new AppError(
+            'Database connection failed. Check your internet connection and try again.',
+            503
+        )
     }
 
     if (err.name === 'ValidationError') {

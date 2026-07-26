@@ -23,11 +23,35 @@ app.use(morgan('dev'))
 app.use("/images", express.static(path.join(__dirname, "images")));
 
 //MONGODB CONNECTION
-mongoose.connect(process.env.MONGO_URI)
-    .then(() => console.log("MONGODB Connected"))
-    .catch((err) => console.log(err))
+mongoose.connect(process.env.MONGO_URI, {
+    serverSelectionTimeoutMS: 10000,
+})
+    .then(() => console.log("MongoDB connected"))
+    .catch((err) => {
+        console.error("MongoDB initial connection failed:", err.message)
+    })
+
+mongoose.connection.on("disconnected", () => {
+    console.error("MongoDB disconnected")
+})
+
+mongoose.connection.on("error", (err) => {
+    console.error("MongoDB error:", err.message)
+})
+
+const dbReady = (req, res, next) => {
+    if (mongoose.connection.readyState === 1) {
+        return next()
+    }
+
+    return res.status(503).json({
+        success: false,
+        message: "Database unavailable. Please try again shortly.",
+    })
+}
 
 //API Routes
+app.use(dbReady)
 app.use('/api/auth', userRoutes)
 app.use('/api', productRoutes)
 app.use('/api/reviews', reviewRoutes)
