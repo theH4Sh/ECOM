@@ -11,7 +11,7 @@ const Home = () => {
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
 
-  const url = `http://localhost:8000/api/product?page=${page}&limit=${LIMIT}`;
+  const url = `${import.meta.env.VITE_API}product?page=${page}&limit=${LIMIT}`;
   const { data, loading, error } = useFetch(url);
 
   if (data) {

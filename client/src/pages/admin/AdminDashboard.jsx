@@ -23,14 +23,14 @@ const AdminDashboard = () => {
             setLoading(true);
             
             // Fetch all orders
-            const ordersRes = await fetch('http://localhost:8000/api/order/get-all-orders', {
+            const ordersRes = await fetch(`${import.meta.env.VITE_API}order/get-all-orders`, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
             });
             
             // Fetch all products
-            const productsRes = await fetch('http://localhost:8000/api/product?limit=1000');
+            const productsRes = await fetch(`${import.meta.env.VITE_API}product?limit=1000`);
             
             if (ordersRes.ok) {
                 const orders = await ordersRes.json();

@@ -9,7 +9,7 @@ const AdminOrders = () => {
     const [selectedOrder, setSelectedOrder] = useState(null);
     const token = useSelector((state) => state.auth.token);
 
-    const { data, loading, error } = useFetch('http://localhost:8000/api/order/get-all-orders');
+    const { data, loading, error } = useFetch(`${import.meta.env.VITE_API}order/get-all-orders`);
 
     useEffect(() => {
         if (data) {
@@ -19,7 +19,7 @@ const AdminOrders = () => {
 
     const handleStatusUpdate = async (orderId, newStatus) => {
         try {
-            const response = await fetch(`http://localhost:8000/api/order/update-order-status/${orderId}`, {
+            const response = await fetch(`${import.meta.env.VITE_API}order/update-order-status/${orderId}`, {
                 method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json',
@@ -214,7 +214,7 @@ const AdminOrders = () => {
                                     {selectedOrder.items.map((item, index) => (
                                         <div key={index} className="flex items-center gap-4 p-3 bg-gray-50 rounded-lg">
                                             <img 
-                                                src={`http://localhost:8000/images/${item.product.image}`}
+                                                src={`${import.meta.env.VITE_IMAGE_ENDPOINT}${item.product.image}`}
                                                 alt={item.product.name}
                                                 className="w-16 h-16 object-cover rounded"
                                             />

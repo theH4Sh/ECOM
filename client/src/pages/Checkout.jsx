@@ -192,7 +192,7 @@ export default function Checkout() {
             {cartItems.map((item) => (
               <div key={item.product} className="flex items-center gap-3">
                 <img
-                  src={`http://localhost:8000/images/${item.image}`}
+                  src={`${import.meta.env.VITE_IMAGE_ENDPOINT}${item.image}`}
                   className="w-14 h-14 rounded-lg object-cover"
                 />
                 <div className="flex-1">

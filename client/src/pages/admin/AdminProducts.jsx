@@ -32,7 +32,7 @@ const AdminProducts = () => {
   });
 
   const { data: products = [], loading, error, refetch } = useFetch(
-    `http://localhost:8000/api/product?page=${page}&limit=${LIMIT}`
+    `${import.meta.env.VITE_API}product?page=${page}&limit=${LIMIT}`
   );
 
   const resetForm = () => {
@@ -87,8 +87,8 @@ const AdminProducts = () => {
     });
 
     const url = editingProduct
-        ? `http://localhost:8000/api/product/${editingProduct._id}`
-        : "http://localhost:8000/api/product";
+        ? `${import.meta.env.VITE_API}product/${editingProduct._id}`
+        : `${import.meta.env.VITE_API}product`;
 
     const method = editingProduct ? "PUT" : "POST";
 
@@ -125,7 +125,7 @@ const AdminProducts = () => {
     setDeleting(true);
     try {
       const res = await fetch(
-        `http://localhost:8000/api/product/${productToDelete._id}`,
+        `${import.meta.env.VITE_API}product/${productToDelete._id}`,
         {
           method: "DELETE",
           headers: { Authorization: `Bearer ${token}` },
@@ -182,7 +182,7 @@ const AdminProducts = () => {
                 {/* IMAGE */}
                 <div className="relative h-48 bg-gray-100 overflow-hidden">
                     <img
-                    src={`http://localhost:8000/images/${p.image}`}
+                    src={`${import.meta.env.VITE_IMAGE_ENDPOINT}${p.image}`}
                     alt={p.name}
                     className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-300"
                     />

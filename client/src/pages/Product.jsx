@@ -79,7 +79,7 @@ const Product = () => {
             {/* Image */}
             <div className="flex-1 bg-gray-100 rounded-2xl overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300">
               <img
-                src={`http://localhost:8000/images/${data.image}`}
+                src={`${import.meta.env.VITE_IMAGE_ENDPOINT}${data.image}`}
                 alt={data.name}
                 className="w-full h-[400px] sm:h-[450px] object-cover rounded-2xl"
               />

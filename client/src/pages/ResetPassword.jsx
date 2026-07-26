@@ -19,7 +19,7 @@ export default function ResetPassword() {
 
     try {
       const res = await fetch(
-        `http://localhost:8000/api/auth/reset-password/${token}`,
+        `${import.meta.env.VITE_API}auth/reset-password/${token}`,
         {
           method: "POST",
           headers: {
