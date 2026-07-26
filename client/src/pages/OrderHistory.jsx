@@ -1,35 +1,47 @@
-import { useState } from "react";
-import { useSelector } from "react-redux";
+import { Link } from "react-router-dom";
 import { useFetch } from "../hooks/useFetch";
 import OrderCard from "../components/OrderCard";
 
 export default function Orders() {
-  const { isAuthenticated, token } = useSelector((state) => state.auth);
-
-  const { data: orders, loading, error } = useFetch(import.meta.env.VITE_API + "order/get-orders")
+  const { data: orders, loading, error } = useFetch(
+    import.meta.env.VITE_API + "order/get-orders"
+  );
 
   return (
     <div className="max-w-4xl mx-auto py-10 px-4">
       <h1 className="text-3xl font-bold mb-6">Order History</h1>
-        {loading && (
-            <div className="flex justify-center items-center h-[70vh] text-xl">
-                Loading your orders...
-            </div>
-            )
-        }
 
-        {error && (
-            <div className="flex justify-center items-center h-[70vh] text-xl text-red-500">
-                Error: {error.message}
-            </div>
-            )
-        }
+      {loading && (
+        <div className="flex justify-center items-center h-48 text-gray-500">
+          Loading your orders...
+        </div>
+      )}
 
-        {orders.length === 0 && !loading ? (
-            <p>You have no orders yet.</p>
-        ) : (
-                <OrderCard orders={orders} />
-        )}
+      {error && (
+        <div className="rounded-2xl border border-red-100 bg-red-50 px-6 py-8 text-center text-red-600">
+          {error.message}
+        </div>
+      )}
+
+      {!loading && !error && orders.length === 0 && (
+        <div className="rounded-2xl border border-dashed border-gray-200 bg-white px-6 py-16 text-center">
+          <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-gray-100 text-gray-400 text-2xl">
+            📦
+          </div>
+          <h2 className="text-lg font-semibold text-gray-900">No orders yet</h2>
+          <p className="mt-2 text-gray-500">
+            When you place an order, it will show up here.
+          </p>
+          <Link
+            to="/"
+            className="inline-block mt-6 px-5 py-2.5 rounded-lg bg-[#0B7C56] text-white text-sm font-medium hover:bg-[#095c40] transition"
+          >
+            Start shopping
+          </Link>
+        </div>
+      )}
+
+      {!loading && !error && orders.length > 0 && <OrderCard orders={orders} />}
     </div>
   );
 }
