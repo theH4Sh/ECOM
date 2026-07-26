@@ -1,9 +1,9 @@
 import { Link, useNavigate } from "react-router-dom";
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { toast } from 'react-hot-toast';
 import { useDispatch } from "react-redux"
 import { login } from '../slice/authSlice.js';
-import { getErrorMessage, toastApiError } from '../lib/api';
+import { getErrorMessage } from '../lib/api';
 
 export default function Login() {
 
@@ -19,41 +19,38 @@ export default function Login() {
     setFormData({...formData, [e.target.id]: e.target.value})
   }
   
-  useEffect(() => {
-    console.log(formData)
-  }, [formData]);
-  
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
 
-    fetch(import.meta.env.VITE_API + 'auth/login/', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json'},
-      body: JSON.stringify(formData)
-    })
-    .then((res) => {
+    const toastId = toast.loading("Logging you in...")
+
+    try {
+      const res = await fetch(import.meta.env.VITE_API + 'auth/login/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData)
+      })
+
       if (!res.ok) {
-        return res.json().then((data) => {
-          throw new Error(getErrorMessage(data, 'Login failed'))
-        })
+        const data = await res.json()
+        throw new Error(getErrorMessage(data, 'Login failed'))
       }
-      return res.json()
-    })
-    .then((data) => {
-      console.log('login successful: ', data)
+
+      const data = await res.json()
+
       dispatch(login(data))
-      toast.success("Login successful! 🎉")
       localStorage.setItem('auth', JSON.stringify({
-          username: data.username,
-          token: data.token,
-          role: data.role,
-          isAuthenticated: true
+        username: data.username,
+        token: data.token,
+        role: data.role,
+        isAuthenticated: true
       }))
+
+      toast.success("Login successful!", { id: toastId })
       navigate('/')
-    })
-    .catch((err) => {
-      toastApiError(err, 'Login failed')
-    })
+    } catch (err) {
+      toast.error(err.message || 'Login failed', { id: toastId })
+    }
   }
 
   return (

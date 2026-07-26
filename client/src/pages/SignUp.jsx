@@ -1,7 +1,7 @@
 import { useState} from 'react';
 import toast from 'react-hot-toast';
 import { Link, useNavigate } from "react-router-dom";
-import { getErrorMessage, toastApiError } from '../lib/api';
+import { getErrorMessage } from '../lib/api';
 
 export default function SignUp() {
 
@@ -17,31 +17,31 @@ export default function SignUp() {
     setFormData({...formData, [e.target.id]: e.target.value})
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    fetch(import.meta.env.VITE_API + 'auth/signup/', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(formData)
-    })
-    .then((res) => {
+    const toastId = toast.loading("Signing you up...");
+
+    try {
+      const res = await fetch(import.meta.env.VITE_API + 'auth/signup/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData)
+      });
+
       if (!res.ok) {
-        return res.json().then((data) => {
-          throw new Error(getErrorMessage(data, 'Signup failed'))
-        })
+        const data = await res.json();
+        throw new Error(getErrorMessage(data, 'Signup failed'));
       }
-      return res.json()
-    })
-    .then((res) => {
-      console.log('signup successful: ', res);
-      toast.success("Signup successful! 🎉")
-      navigate('/login')
-    })
-    .catch((err) => {
-      toastApiError(err, 'Signup failed')
-    })
-  }
+
+      await res.json();
+
+      toast.success(`Verification email sent to ${formData.email}`, { id: toastId });
+      navigate('/login');
+    } catch (err) {
+      toast.error(err.message || 'Signup failed', { id: toastId });
+    }
+  };
 
   return (
     <div className="min-h-screen bg-white flex items-center justify-center px-4">
