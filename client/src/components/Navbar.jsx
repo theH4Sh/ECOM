@@ -43,8 +43,7 @@ const Navbar = () => {
             </Link>
 
             <div className="flex items-center gap-6">
-                {/* Notification Bell */}
-                <NotificationBell />
+                {isAuthenticated && <NotificationBell />}
                 
                 {/* Cart */}
                 <div onClick={() => setShowCart(!showCart)}
