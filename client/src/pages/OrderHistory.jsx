@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { useFetch } from "../hooks/useFetch";
 import OrderCard from "../components/OrderCard";
+import SkeletonOrderCard from "../components/SkeletonOrderCard";
 
 export default function Orders() {
   const { data: orders, loading, error } = useFetch(
@@ -12,8 +13,10 @@ export default function Orders() {
       <h1 className="text-3xl font-bold mb-6">Order History</h1>
 
       {loading && (
-        <div className="flex justify-center items-center h-48 text-gray-500">
-          Loading your orders...
+        <div className="space-y-6">
+          {Array.from({ length: 2 }).map((_, i) => (
+            <SkeletonOrderCard key={i} />
+          ))}
         </div>
       )}
 

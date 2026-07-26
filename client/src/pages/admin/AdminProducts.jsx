@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useSelector } from "react-redux";
 import toast from "react-hot-toast";
 import { useFetch } from "../../hooks/useFetch";
-import SkeletonCard from "../../components/SkeletonCard";
+import SkeletonProductGrid from "../../components/SkeletonProductGrid";
 import { getErrorMessage, toastApiError } from "../../lib/api";
 
 const LIMIT = 8;
@@ -148,10 +148,15 @@ const AdminProducts = () => {
   };
 
   if (loading) return (
-    <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
-      {Array.from({ length: 8 }).map((_, i) => (
-        <SkeletonCard key={i} />
-      ))}
+    <div className="space-y-8">
+      <div className="flex animate-pulse justify-between items-center">
+        <div className="space-y-2">
+          <div className="h-8 w-32 rounded-lg bg-gray-200" />
+          <div className="h-4 w-48 rounded bg-gray-200" />
+        </div>
+        <div className="h-10 w-32 rounded-lg bg-gray-200" />
+      </div>
+      <SkeletonProductGrid count={8} />
     </div>
   );
   if (error) return <p className="text-red-500">{error.message}</p>;

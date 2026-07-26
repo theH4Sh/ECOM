@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import Card from "../components/Card";
 import { useFetch } from "../hooks/useFetch";
 import SearchBar from "../components/SearchBar";
-import SkeletonCard from "../components/SkeletonCard";
+import SkeletonProductGrid from "../components/SkeletonProductGrid";
 
 const LIMIT = 10;
 
@@ -24,10 +24,10 @@ const Home = () => {
   );
 
   return (
-    <div className="max-w-7xl mx-auto px-6 py-10 space-y-14">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 py-10 space-y-14">
 
       {/* SEARCH / HERO */}
-      <div className="bg-gray-100 rounded-2xl p-8 space-y-6 flex flex-col items-center">
+      <div className="bg-gray-100 rounded-2xl p-4 sm:p-8 space-y-6 flex flex-col items-center w-full">
         <h1 className="text-3xl md:text-4xl font-bold text-gray-900">
           Discover Your Style
         </h1>
@@ -67,13 +67,12 @@ const Home = () => {
           Products
         </h2>
 
-      {loading &&     
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
-          {Array.from({ length: 8 }).map((_, i) => (
-            <SkeletonCard key={i} />
-          ))}
-        </div>
-      }
+      {loading && (
+        <SkeletonProductGrid
+          count={8}
+          className="grid grid-cols-2 gap-3 sm:gap-6 sm:grid-cols-2 lg:grid-cols-3"
+        />
+      )}
         {error && <p className="text-red-500">{error.message}</p>}
 
         {filteredProducts?.length === 0 && (

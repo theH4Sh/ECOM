@@ -3,7 +3,7 @@ import { Link, useParams } from "react-router-dom";
 import toast from "react-hot-toast";
 import { useFetch } from "../hooks/useFetch";
 import Card from "../components/Card";
-import SkeletonCard from "../components/SkeletonCard";
+import SkeletonProductGrid from "../components/SkeletonProductGrid";
 
 const LIMIT = 8;
 
@@ -14,11 +14,10 @@ const CategoryPage = () => {
   const { data: products, loading, error } = useFetch(import.meta.env.VITE_API + `product?category=${category}&page=${page}&limit=${LIMIT}`)
 
   if (loading) return (
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
-          {Array.from({ length: 8 }).map((_, i) => (
-            <SkeletonCard key={i} />
-          ))}
-        </div>
+    <div className="space-y-8 px-4 md:px-8">
+      <div className="h-8 w-40 animate-pulse rounded-lg bg-gray-200" />
+      <SkeletonProductGrid count={8} />
+    </div>
   );
   if (error) return <p className="text-red-500 text-center mt-10">{error.message}</p>;
 

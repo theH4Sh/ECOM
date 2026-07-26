@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import Card from "../components/Card";
-import SkeletonCard from "../components/SkeletonCard";
+import SkeletonProductGrid from "../components/SkeletonProductGrid";
 import SearchBar from "../components/SearchBar";
 import { parseApiError } from "../lib/api";
 
@@ -206,13 +206,7 @@ export default function ProductSearch() {
             )}
           </div>
 
-          {loading && (
-            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-              {Array.from({ length: LIMIT }).map((_, i) => (
-                <SkeletonCard key={i} />
-              ))}
-            </div>
-          )}
+          {loading && <SkeletonProductGrid count={LIMIT} />}
 
           {error && (
             <div className="rounded-2xl border border-red-100 bg-red-50 px-6 py-8 text-center text-red-600">

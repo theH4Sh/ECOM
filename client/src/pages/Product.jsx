@@ -11,6 +11,8 @@ import { useReviews } from "../hooks/useReviews";
 import { getErrorMessage } from "../lib/api";
 import { useBreadcrumbLabel } from "../context/BreadcrumbContext";
 import { useRequireVerified } from "../hooks/useRequireVerified";
+import SkeletonProductPage from "../components/SkeletonProductPage";
+import SkeletonReview from "../components/SkeletonReview";
 
 const Product = () => {
   const dispatch = useDispatch();
@@ -69,7 +71,7 @@ const Product = () => {
 
   return (
     <div className="max-w-6xl mx-auto px-4 py-8 sm:py-10">
-      {loading && <p className="text-center text-lg">Loading...</p>}
+      {loading && <SkeletonProductPage />}
       {error && <p className="text-center text-red-500">{error.message}</p>}
 
       {data && (
@@ -199,7 +201,13 @@ const Product = () => {
             </div>
 
             {/* Review List */}
-            {reviewsLoading && <p>Loading reviews...</p>}
+            {reviewsLoading && (
+              <div className="space-y-4 w-full sm:w-[500px] md:w-[700px] lg:w-[800px]">
+                {Array.from({ length: 3 }).map((_, i) => (
+                  <SkeletonReview key={i} />
+                ))}
+              </div>
+            )}
             {reviewsError && <p className="text-red-500">{reviewsError}</p>}
             {!reviewsLoading && !reviewsError && reviews.length === 0 && (
               <p className="text-gray-500">No reviews yet.</p>
