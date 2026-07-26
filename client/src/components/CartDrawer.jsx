@@ -87,7 +87,7 @@ const CartDrawer = ({ open, onClose }) => {
             <div key={item.product} className="flex items-center justify-between gap-3 p-3 border-b">
               
               <img 
-                src={`http://localhost:8000/images/${item.image}`}
+                src={`${import.meta.env.VITE_IMAGE_ENDPOINT}${item.image}`}
                 className="w-16 h-16 object-cover rounded"
               />
 

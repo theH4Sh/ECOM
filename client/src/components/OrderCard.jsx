@@ -65,7 +65,7 @@ const OrderCard = ({ orders }) => {
                   {/* Image */}
                   <div className="relative shrink-0">
                     <img
-                      src={`http://localhost:8000/images/${item.product.image}`}
+                      src={`${import.meta.env.VITE_IMAGE_ENDPOINT}${item.product.image}`}
                       alt={item.product.name}
                       className="w-14 h-14 rounded-xl object-cover"
                     />

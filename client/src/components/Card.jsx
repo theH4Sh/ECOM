@@ -7,7 +7,7 @@ const Card = ({ image, name, description, price, averageRating = 0, reviewCount 
       {/* IMAGE */}
       <div className="relative h-56 bg-gray-100 overflow-hidden">
         <img
-          src={`http://localhost:8000/images/${image}`}
+          src={`${import.meta.env.VITE_IMAGE_ENDPOINT}${image}`}
           alt={name}
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
         />
