@@ -23,7 +23,7 @@ const loginUser = async (req, res, next) => {
         //token
         const token = createToken(user)
 
-        res.status(200).json({ username, token, role })
+        res.status(200).json({ username, token, role, isVerified: user.isVerified })
     } catch (error) {
         next(error)
     }

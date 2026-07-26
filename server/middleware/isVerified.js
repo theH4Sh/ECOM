@@ -1,13 +1,22 @@
-// middleware/isVerified.js
 const User = require('../models/userModel')
 
 const isVerified = async (req, res, next) => {
   try {
-    const user = req.user // assume requireAuth already decoded the JWT
-    if (!user) return res.status(401).json({ error: 'Not authenticated' })
+    if (!req.user?._id) {
+      return res.status(401).json({ message: 'Not authenticated' })
+    }
+
+    const user = await User.findById(req.user._id).select('isVerified role')
+    if (!user) {
+      return res.status(401).json({ message: 'Not authenticated' })
+    }
+
+    if (user.role === 'admin') {
+      return next()
+    }
 
     if (!user.isVerified) {
-      return res.status(403).json({ error: 'Email not verified' })
+      return res.status(403).json({ message: 'Email not verified' })
     }
 
     next()
