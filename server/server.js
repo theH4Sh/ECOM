@@ -39,7 +39,8 @@ const { errorHandler, notFoundHandler } = require('./middleware/errorHandler')
 app.use(notFoundHandler)
 app.use(errorHandler)
 
-const port = 8000
+const port = process.env.PORT || 8000;
+
 app.listen(port, () => {
-    console.log(`Listening on port: ${port}`)
-})
+  console.log(`Listening on port: ${port}`);
+});
