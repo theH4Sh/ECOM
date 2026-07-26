@@ -6,6 +6,7 @@ import { CardElement, useElements, useStripe } from "@stripe/react-stripe-js";
 import { usePostOrder } from "../hooks/usePostOrder";
 import { parseApiError, toastApiError } from "../lib/api";
 import { clearCart } from "../slice/cartSlice";
+import { Link } from "react-router-dom";
 
 export default function Checkout() {
   const stripe = useStripe();
@@ -15,7 +16,7 @@ export default function Checkout() {
 
   const cartItems = useSelector((state) => state.cart.items);
   const totalAmount = useSelector((state) => state.cart.totalAmount);
-  const { token } = useSelector((state) => state.auth);
+  const { token, isVerified } = useSelector((state) => state.auth);
 
   const { sendOrder, loading, data } = usePostOrder();
 
@@ -99,6 +100,23 @@ export default function Checkout() {
       toastApiError(err, "Checkout failed");
     }
   };
+
+  if (!isVerified) {
+    return (
+      <div className="max-w-lg mx-auto px-4 py-20 text-center">
+        <h1 className="text-2xl font-bold text-gray-900">Verify your email</h1>
+        <p className="mt-3 text-gray-600">
+          You need to verify your email before checking out. Check your inbox for the verification link.
+        </p>
+        <Link
+          to="/"
+          className="inline-block mt-6 px-5 py-2.5 rounded-lg bg-[#0B7C56] text-white font-medium hover:bg-[#095c40] transition"
+        >
+          Back to shop
+        </Link>
+      </div>
+    );
+  }
 
   return (
     <div className="text-start max-w-6xl mx-auto px-4 py-10">

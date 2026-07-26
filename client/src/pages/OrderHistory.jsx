@@ -18,8 +18,21 @@ export default function Orders() {
       )}
 
       {error && (
-        <div className="rounded-2xl border border-red-100 bg-red-50 px-6 py-8 text-center text-red-600">
-          {error.message}
+        <div className={`rounded-2xl px-6 py-8 text-center ${
+          error.message === "Email not verified"
+            ? "border border-amber-200 bg-amber-50 text-amber-900"
+            : "border border-red-100 bg-red-50 text-red-600"
+        }`}>
+          {error.message === "Email not verified" ? (
+            <>
+              <h2 className="text-lg font-semibold">Verify your email</h2>
+              <p className="mt-2">
+                Check your inbox for the verification link to view your order history.
+              </p>
+            </>
+          ) : (
+            error.message
+          )}
         </div>
       )}
 

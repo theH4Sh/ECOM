@@ -7,6 +7,7 @@ import NotificationBell from "./NotificationBell";
 
 const Navbar = () => {
     const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
+    const isVerified = useSelector((state) => state.auth.isVerified);
     const role = useSelector((state) => state.auth.role)
     const username = useSelector((state) => state.auth.username);
     const dispatch = useDispatch();
@@ -43,7 +44,7 @@ const Navbar = () => {
             </Link>
 
             <div className="flex items-center gap-6">
-                {isAuthenticated && <NotificationBell />}
+                {isAuthenticated && isVerified && <NotificationBell />}
                 
                 {/* Cart */}
                 <div onClick={() => setShowCart(!showCart)}

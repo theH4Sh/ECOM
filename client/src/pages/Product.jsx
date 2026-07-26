@@ -10,12 +10,14 @@ import { usePostReview } from "../hooks/usePostReview";
 import { useReviews } from "../hooks/useReviews";
 import { getErrorMessage } from "../lib/api";
 import { useBreadcrumbLabel } from "../context/BreadcrumbContext";
+import { useRequireVerified } from "../hooks/useRequireVerified";
 
 const Product = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const params = useParams();
   const { username, token, isAuthenticated } = useSelector((state) => state.auth);
+  const { requireVerified } = useRequireVerified();
 
   const { data, loading, error } = useFetch(
     import.meta.env.VITE_API + "product/" + params.id
@@ -146,9 +148,9 @@ const Product = () => {
                   
                 <button
                   onClick={() => {
-                    if (data.quantity === 0) return; // prevent out-of-stock purchases
+                    if (data.quantity === 0) return;
+                    if (!requireVerified("checkout")) return;
 
-                    // Add product to cart
                     dispatch(
                       addToCart({
                         product: data._id,
@@ -159,10 +161,7 @@ const Product = () => {
                       })
                     );
 
-                    // Show a quick toast
                     toast.success(`${data.name} added to cart`);
-
-                    // Navigate to checkout
                     navigate("/checkout");
                   }}
                   disabled={data.quantity === 0}
@@ -186,6 +185,8 @@ const Product = () => {
             <div className="mb-12 w-full sm:w-[500px] md:w-[700px] lg:w-[800px]">
               <ReviewForm
                 onSubmit={async (review) => {
+                  if (!requireVerified("submit a review")) return;
+
                   try {
                     const newReview = await sendReview(review);
                     addReview(newReview);

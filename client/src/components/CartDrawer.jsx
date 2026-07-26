@@ -3,6 +3,7 @@ import { clearCart, removeFromCart } from "../slice/cartSlice";
 import { usePostOrder } from "../hooks/usePostOrder";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router";
+import { useRequireVerified } from "../hooks/useRequireVerified";
 
 const CartDrawer = ({ open, onClose }) => {
   const cartItems = useSelector((state) => state.cart.items);
@@ -10,6 +11,7 @@ const CartDrawer = ({ open, onClose }) => {
   const auth = useSelector((state) => state.auth);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { requireVerified } = useRequireVerified();
     
     // order
     // const handleCheckout = async () => {
@@ -39,13 +41,10 @@ const CartDrawer = ({ open, onClose }) => {
         return;
        }
 
-      try {
-        onClose();
-        navigate('/checkout');
-      } catch (error) {
-          console.error("Order Failed:", error);
-          toast.error("Failed to place order. Please try again.");
-      }
+      if (!requireVerified("checkout")) return;
+
+      onClose();
+      navigate('/checkout');
     };
 
   return (
@@ -122,11 +121,15 @@ const CartDrawer = ({ open, onClose }) => {
           <button 
             onClick={handleCheckout}
             className={`w-full py-3 rounded-lg text-white 
-                ${!auth.isAuthenticated ? "bg-gray-400 cursor-not-allowed" : "bg-[#0B7C56] hover:bg-[#095c40] cursor-pointer"}
+                ${!auth.isAuthenticated || !auth.isVerified ? "bg-gray-400 cursor-not-allowed" : "bg-[#0B7C56] hover:bg-[#095c40] cursor-pointer"}
             `}
-            disabled={!auth.isAuthenticated}
+            disabled={!auth.isAuthenticated || !auth.isVerified}
           >
-            {auth.isAuthenticated ? "Checkout" : "Login to Checkout"}
+            {!auth.isAuthenticated
+              ? "Login to Checkout"
+              : !auth.isVerified
+              ? "Verify Email to Checkout"
+              : "Checkout"}
           </button>
         </div>
       </div>

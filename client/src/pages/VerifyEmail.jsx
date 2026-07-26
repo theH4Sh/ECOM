@@ -1,9 +1,13 @@
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 import { getErrorMessage } from "../lib/api";
+import { setVerified } from "../slice/authSlice";
 
 export default function VerifyEmail() {
   const { token } = useParams();
+  const dispatch = useDispatch();
+  const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
   const [status, setStatus] = useState("loading");
   const [message, setMessage] = useState("");
 
@@ -19,6 +23,17 @@ export default function VerifyEmail() {
 
         setMessage(data.message);
         setStatus("success");
+
+        if (isAuthenticated) {
+          dispatch(setVerified());
+          const auth = JSON.parse(localStorage.getItem("auth"));
+          if (auth) {
+            localStorage.setItem(
+              "auth",
+              JSON.stringify({ ...auth, isVerified: true })
+            );
+          }
+        }
       } catch (err) {
         setMessage(err.message || "Verification failed");
         setStatus("error");
@@ -31,7 +46,7 @@ export default function VerifyEmail() {
       setStatus("error");
       setMessage("Invalid verification link");
     }
-  }, [token]);
+  }, [token, isAuthenticated, dispatch]);
 
   return (
     <div className="min-h-[60vh] flex items-center justify-center px-4">
@@ -51,10 +66,10 @@ export default function VerifyEmail() {
             <h1 className="text-2xl font-semibold text-gray-800">Email verified</h1>
             <p className="text-gray-600">{message}</p>
             <Link
-              to="/login"
+              to={isAuthenticated ? "/" : "/login"}
               className="inline-block w-full py-2.5 rounded-lg bg-[#0B7C56] text-white font-semibold hover:bg-[#095c40] transition"
             >
-              Go to login
+              {isAuthenticated ? "Continue shopping" : "Go to login"}
             </Link>
           </>
         )}

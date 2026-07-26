@@ -3,6 +3,7 @@ import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import ScrollToTop from "../components/ScrollToTop";
 import Breadcrumbs from "../components/Breadcrumbs";
+import VerificationBanner from "../components/VerificationBanner";
 
 const RootLayout = () => {
     return ( 
@@ -11,6 +12,7 @@ const RootLayout = () => {
             <nav>
                 <Navbar/>
             </nav>
+            <VerificationBanner />
             <div className="min-h-screen">
                 <Breadcrumbs />
                 <Outlet/>

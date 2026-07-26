@@ -43,6 +43,7 @@ export default function Login() {
         username: data.username,
         token: data.token,
         role: data.role,
+        isVerified: data.isVerified,
         isAuthenticated: true
       }))
 
